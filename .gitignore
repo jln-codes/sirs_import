@@ -3,63 +3,28 @@
 ########################################
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-*.pdb
 *.egg-info/
 build/
 dist/
 
 ########################################
-# Environnement virtuel
+# Environnements virtuels
 ########################################
 venv/
 env/
 .venv/
 
 ########################################
-# Logs d'exécution
-########################################
-*.log
-
-########################################
-# Exports JSON produits par sirs_import
-########################################
-*.json
-
-########################################
-# Données sensibles utilisateur
+# Fichiers locaux non versionnés
 ########################################
 config_sirs.toml
+TODO.txt
+*.docx
+*.pdf
 
 ########################################
-# Données GPKG locales de travail
-########################################
-*.gpkg
-
-########################################
-# Photos sources & migration
-########################################
-photos/
-PHOTOS/
-photos_temp/
-photos_migrated/
-
-########################################
-# Fichiers d’indexation
+# OS metadata
 ########################################
 .DS_Store
 Thumbs.db
-
-########################################
-# résultats couchDB extraits
-########################################
-*_contacts.txt
-*_linearId.txt
-
-########################################
-# guides utilisateurs
-########################################
-*.docx
-*.pdf
 
