@@ -1,0 +1,18 @@
+# INCLUSION EXPLICITE
+include README.md
+include LICENSE
+include sirs_import/config_sirs.example.toml
+
+# EXCLUSION
+exclude *.docx
+exclude *.pdf
+exclude TODO.txt
+exclude *.log
+exclude *.json
+exclude *.gpkg
+exclude *.sh
+
+# EXCLURE LES DOSSIERS DE PHOTOS AU CAS OU
+recursive-exclude photos *
+recursive-exclude PHOTOS *
+
