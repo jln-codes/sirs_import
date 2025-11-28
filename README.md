@@ -50,31 +50,31 @@ The system performs:
 
 ## A) Mode développement local / Local development mode
 
-git clone https://github.com/TechCabbalr/sirs_import.git
-cd sirs_import
-pip install -e .
+git clone https://github.com/TechCabbalr/sirs_import.git  
+cd sirs_import  
+pip install -e .  
 
 ---
 
 # Utilisation / Usage
 
 ## Mode par défaut / Default mode  
-cd path/to/data
+cd path/to/data  
 sirs_import
 
 ## Extraction linearId et contactId uniquement / Extract-only mode 
-cd chemin/vers/données 
+cd chemin/vers/données  
 sirs_import --extract
 
 Crée les fichiers /create files <layer_name>_linearId.txt et/and <layer_name>_contactId.txt
 
 ## Import complet vers CouchDB / Full import into CouchDB  
-cd path/to/data
+cd path/to/data  
 sirs_import --upload
 
 ## Fichier de configuration / Configuration file
 
-**FR :** Un fichier config_sirs.toml doit être placé dans le répertoire projet. On peut aussi fournir l'argument --config chemin/vers/config
+**FR :** Un fichier config_sirs.toml doit être placé dans le répertoire projet. On peut aussi fournir l'argument --config chemin/vers/config  
 **EN :** A config_sirs.toml file must exist in the project directory. The argument --config chemin/vers/config can also be given
 
 Exemple fourni / Example provided:
@@ -86,11 +86,11 @@ config_sirs.example.toml
 # Données attendues / Expected data format
 
 ## Désordres
-**FR :** Les colonnes liées aux désordres peuvent avoir n'importe quel nom et seront spéficiées dans le fichier de configuration (.toml)
+**FR :** Les colonnes liées aux désordres peuvent avoir n'importe quel nom et seront spéficiées dans le fichier de configuration (.toml)  
 **EN :** Columns related to disorders can have any name, which should be defined in the configuration file (.toml)
 
 ## Observations
-**FR :** Les colonnes d'observations sont détectées automatiquement sur la base du schéma <prefixe1>_<suffixe_autorisé>. Si obs1 est le préfixe, on attend: 
+**FR :** Les colonnes d'observations sont détectées automatiquement sur la base du schéma <prefixe1>_<suffixe_autorisé>. Si obs1 est le préfixe, on attend:  
 **EN :** Observation columns are automatically detected by parsing <prefixe1>_<suffixe_autorisé> name patterns. If obs1 is the prefix, we expect:
 
 ```
@@ -106,7 +106,7 @@ obs1_urgenceId
 
 
 ## Photos
-**FR :** Les colonnes d'observations sont détectées automatiquement sur la base du schéma <prefixe1>_<prefixe2>_<suffixe_autorisé>. Si obs1 et pho1 sont les préfixes, on attend: 
+**FR :** Les colonnes d'observations sont détectées automatiquement sur la base du schéma <prefixe1>_<prefixe2>_<suffixe_autorisé>. Si obs1 et pho1 sont les préfixes, on attend:  
 **EN :** Observation columns are automatically detected by parsing <prefixe1>_<prefixe2>_<suffixe_autorisé> name patterns. If obs1 and pho1 are the prefixes, we expect:
 
 ```
@@ -121,7 +121,7 @@ obs1_pho1_coteId
 
 ## Répertoire des photos / Photo directory
 
-**FR :** Le fichier peut restructurer le dossier photo pour coller à l'architecture typique utilisée par SIRS. Les photos seront renommées si nécessaire et leur chemin dans le fichier GPKG mis à jour.
+**FR :** Le fichier peut restructurer le dossier photo pour coller à l'architecture typique utilisée par SIRS. Les photos seront renommées si nécessaire et leur chemin dans le fichier GPKG mis à jour.  
 **EN :** The script can automatically reorganize the photo directory to match the standard folder structure expected by SIRS. Photos will be renamed if necessary, and their paths inside the GPKG file will be updated accordingly.
 
 Arborescence finale / Final directory structure:
@@ -190,16 +190,16 @@ obs3_pho1_orientationId manquant
 
 # Export JSON / JSON output
 
-<layername>.json
+nom_GPKG.json
 
-**FR :** Ce fichier peut ensuite être importé dans SIRS (sisr_import --upload).
+**FR :** Ce fichier peut ensuite être importé dans SIRS (sisr_import --upload).  
 **EN :** This output can then be ingested into SIRS (sisr_import --upload).
 
 ---
 
 # Licence / License
 
-**FR :** Utilisation strictement NON COMMERCIALE. Voir LICENSE pour les termes complets.
+**FR :** Utilisation strictement NON COMMERCIALE. Voir LICENSE pour les termes complets.  
 **EN :** Strictly NON-COMMERCIAL USE. See LICENSE for full terms.
 
 ---
@@ -218,21 +218,21 @@ obs3_pho1_orientationId manquant
 
 # Avertissements / Warnings
 
-**FR :** Ce programme manipule des données sensibles et modifie les fichiers sources. Sauvegarder les données originales
+**FR :** Ce programme manipule des données sensibles et modifie les fichiers sources. Sauvegarder les données originales.  
 **EN :** This tool processes potentially critical data et modify source files. Data should be backed up before processing.
 
 ---
 
 # Statut du projet / Project status
 
-**FR :** Projet en développement actif. API et comportement susceptibles d’évoluer.
+**FR :** Projet en développement actif. API et comportement susceptibles d’évoluer.  
 **EN :** Under active development; API may still change.
 
 ---
 
 # Support / Contact
 
-**FR :** Les contributions pertinentes pourront être examinées et intégrées. Signalez les bugs via GitHub issues.
+**FR :** Les contributions pertinentes pourront être examinées et intégrées. Signalez les bugs via GitHub issues.  
 **EN :** Relevant contributions may be reviewed and merged. Bug reports welcome.
 
 
