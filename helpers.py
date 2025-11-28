@@ -19,7 +19,7 @@ from typing import (
     TYPE_CHECKING,
 )
 
-from .exceptions import RestartProgram, GpkgReadError, DataValidationError
+from .exceptions import GpkgReadError, DataValidationError
 from .config_loader import CONFIG
 GPKG_FILE                   = CONFIG["GPKG_FILE"]
 COL_AUTHOR                  = CONFIG["COL_AUTHOR"]

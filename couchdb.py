@@ -127,7 +127,7 @@ def get_all_contacts(write_txt=True):
         contacts.append(obj)
 
     if write_txt:
-        fname = os.path.join(PROJECT_DIR, f"{COUCH_DB}_contacts.txt")
+        fname = os.path.join(PROJECT_DIR, f"{COUCH_DB}_contactId.txt")
         with open(fname, "w", encoding="utf-8", newline="") as f:
             writer = csv.writer(f, delimiter="\t")
             writer.writerow(["contactId", "nom", "prenom"])

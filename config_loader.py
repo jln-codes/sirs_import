@@ -84,17 +84,43 @@ def load_config():
 
     # 1) Chemin explicite fourni par l’utilisateur
     if args.config:
-        if os.path.exists(args.config):
+
+        # chemin inexistant
+        if not os.path.exists(args.config):
             print()
-            print(f"⚙️ Chargement config via --config: {args.config}")
-            return args.config, merge_config(args.config)
+            print_red_block([
+                f"⛔ ERREUR: fichier config introuvable:",
+                f"{args.config}",
+            ])
+            print()
+            sys.exit(1)
+
+        # chemin existe mais ce n'est PAS un fichier
+        if not os.path.isfile(args.config):
+            print()
+            print_red_block([
+                f"⛔ ERREUR: le chemin fourni n'est pas un fichier:",
+                f"{args.config}",
+                "Un chemin de fichier .toml est requis.",
+            ])
+            print()
+            sys.exit(1)
+
+        # pas un .toml
+        if not args.config.lower().endswith(".toml"):
+            print()
+            print_red_block([
+                f"⛔ ERREUR: format incorrect:",
+                f"{args.config}",
+                "Le fichier de configuration doit être un .toml",
+            ])
+            print()
+            sys.exit(1)
 
         print()
-        print_red_block([
-            f"⛔ ERREUR: fichier config introuvable: {args.config}",
-        ])
-        print()
-        sys.exit(1)
+        print(f"⚙️ Chargement config via --config: {args.config}")
+        return args.config, merge_config(args.config)
+
 
     # 2) config_sirs.toml dans le PWD
     cwd_cfg = os.path.join(os.getcwd(), "config_sirs.toml")

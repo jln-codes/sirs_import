@@ -24,7 +24,7 @@ from .couchdb import (
 )
 
 from .helpers import (
-    ensure_requirements, read_gpkg_columns, red, yellow, bold,
+    read_gpkg_columns, red, yellow, bold,
     print_mapping_verbose, is_valid_uuid, print_error_block,
     print_unused_columns,
     check_no_empty_columns, validate_fallbacks,
@@ -43,7 +43,6 @@ COL_COTE_ID                 = CONFIG["COL_COTE_ID"]
 COL_SOURCE_ID               = CONFIG["COL_SOURCE_ID"]
 COL_CATEGORIE_DESORDRE_ID   = CONFIG["COL_CATEGORIE_DESORDRE_ID"]
 COL_TYPE_DESORDRE_ID        = CONFIG["COL_TYPE_DESORDRE_ID"]
-VERBOSE                     = CONFIG["VERBOSE"]
 
 def process_extract_only(gdf, troncons):
     # 1) Valider COL_TRONCONS
@@ -288,7 +287,7 @@ def main(argv=None):
         print()
         print(f"✅ Les tronçons et leur linearId sont disponibles dans {COUCH_DB}_linearId.txt")
         print()
-        print(f"✅ Les contacts (observateurs, photographes) et leur _id sont disponibles dans {COUCH_DB}_contacts.txt")
+        print(f"✅ Les contacts (observateurs, photographes) et leur _id sont disponibles dans {COUCH_DB}_contactId.txt")
 
     # validation fallbacks
     validate_fallbacks(contacts)
@@ -342,10 +341,9 @@ def main(argv=None):
     print()
     print(f"📁 Le fichier comporte {total_cols} colonnes et {total_rows} lignes")
 
-    if VERBOSE:
-        print()
-        print("📁 Colonnes disponibles :")
-        print([c for c in cols if c != "geometry"])
+    print()
+    print("📁 Colonnes disponibles :")
+    print([c for c in cols if c != "geometry"])
 
     # diagnostic désordres
     rows, errors, warnings = diagnose_mapping(cols, gdf, gpkg_schema, contacts)
@@ -359,12 +357,11 @@ def main(argv=None):
         raise DataValidationError(msg)
 
     print()
-    if VERBOSE:
-        print(bold("ℹ️ Rappels:"))
-        print('   "@class": "fr.sirs.core.model.Desordre" est ajouté automatiquement.')
-        print("   Les champs _id, _rev, dateMaj, lastUpdateAuthor sont calculés à l'import.")
-        print("   Idem pour les bornes géographiques et geometry.")
-        print("   Les champs prDebut et prFin sont également recalculés à l'import.")
+    print(bold("ℹ️ Rappels:"))
+    print('   "@class": "fr.sirs.core.model.Desordre" est ajouté automatiquement.')
+    print("   Les champs _id, _rev, dateMaj, lastUpdateAuthor sont calculés à l'import.")
+    print("   Idem pour les bornes géographiques et geometry.")
+    print("   Les champs prDebut et prFin sont également recalculés à l'import.")
 
 
     if warnings:
@@ -490,12 +487,11 @@ def main(argv=None):
         print(yellow("   " + ", ".join(invalid_all)))
 
     # colonnes non utilisées
-    if VERBOSE:
-        used_obs_pho = used_obs_columns | used_photo_columns
-        print()
-        print_unused_columns(
-            cols, used_des_cols, used_obs_pho, invalid_all
-        )
+    used_obs_pho = used_obs_columns | used_photo_columns
+    print()
+    print_unused_columns(
+        cols, used_des_cols, used_obs_pho, invalid_all
+    )
 
     # mise à jour des références
     print()

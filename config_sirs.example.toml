@@ -1,112 +1,125 @@
 #########################################################
-# CONFIGURATION SIRS_IMPORT — EXEMPLE (A NE PAS GARDER TEL QUEL)
-# Example configuration file for sirs_import
+# CONFIGURATION SIRS_IMPORT — EXEMPLE
+# NE PAS UTILISER TEL QUEL — MODIFIER AVANT USAGE
 #########################################################
 
 
 #########################################################
-# Base CouchDB
+# Connexion CouchDB
 #########################################################
 
-COUCH_URL = "http://localhost:5984"
-COUCH_DB = "crashtest"
+COUCH_URL  = "http://localhost:5984"
+COUCH_DB   = "crashtest"
 COUCH_USER = "geouser"
-COUCH_PW = "geopw"
-
-# FR : si la base nécessite SSL auto-signé vous pouvez forcer :
-# EN : if CouchDB uses self-signed certs you may force:
-# COUCH_VERIFY_SSL = false
-
+COUCH_PW   = "geopw"
 
 
 #########################################################
-# Données locales / Local data environment
+# Données locales (GPKG + photos)
 #########################################################
 
-# nom du fichier GPKG / GPKG filename
+# Nom du fichier GeoPackage
 GPKG_FILE = "SIRS_points.gpkg"
 
-# nom de la couche / layer name inside the GPKG
+# Nom de la couche dans le GPKG
 GPKG_LAYER = "SIRS_points"
 
-# FR : tronçons — nom de colonne ou valeur statique
-# EN : troncons — column name or static value
+# Tronçons — soit nom de colonne GPKG (chaine), soit valeur fixe (chaine)
 COL_TRONCONS = "troncons"
 
+# Le chemin ROOT_DIR n'est PAS défini ici.
+# Le script doit être lancé depuis le dossier projet qui contient :
+# - le GPKG
+# - le dossier photos
+# - le config_sirs.toml
+# exécution attendue :
+#    cd /chemin/projet
+#    sirs_import
 
 
 #########################################################
-# DÉSORDRES / DAMAGES
+# DÉSORDRES (champs racine du modèle SIRS)
 #########################################################
 
-# FR : linearId — colonne ou valeur UUID statique
-# EN : linearId — column or static UUID
+# linearId — colonne ou valeur UUID statique
+# DOIT être présent pour chaque ligne et NE DOIT PAS contenir NULL
 COL_LINEAR_ID = "linearId"
 
+# Dates ISO obligatoires au format yyyy-mm-dd
 COL_DATE_DEBUT = "date_debut"
-COL_DATE_FIN = "date_fin"
+COL_DATE_FIN   = "date_fin"
 
-# FR : auteur du désordre — peut être colonne ou UUID statique
-# EN : crisis author — column or static UUID
-# peut être laissé vide / can be empty
+# Auteur du désordre : colonne GPKG ou UUID
+# peut être laissé vide (« aucun auteur associé »)
 COL_AUTHOR = "1ec0d5d2de7d9f59346a6305fd000f71"
 
 COL_DESIGNATION = "designation"
-COL_LIBELLE = ""
-
+COL_LIBELLE     = ""
 COL_COMMENTAIRE = "commentaire"
-COL_LIEUDIT = ""
+COL_LIEUDIT     = ""
 
-# FR : positionId — colonne ou valeur statique
-# EN : positionId — column or static value
+# Les champs suivants acceptent soit :
+# - un entier dans l’intervalle autorisé
+# - une chaine sous la forme RefXXX:n
+
+# positionId — valeurs autorisées: 3..15 ou 99
+# ex: 3  ou  "RefPosition:3"
 COL_POSITION_ID = "position"
 
-# FR : coteId — peut être int ou string
-# EN : coteId — may be int or string
+# coteId (désordre) — valeurs: 1..8 ou 99
+# ex: 2  ou "RefCote:2"
 COL_COTE_ID = 3
 
+# sourceId — valeurs: 0..4 ou 99
+# ex: 0 ou "RefSource:0"
 COL_SOURCE_ID = 2
+
+# categorieDesordreId — valeurs: 1..7
+# ex: 3 ou "RefCategorieDesordre:3"
 COL_CATEGORIE_DESORDRE_ID = ""
+
+# typeDesordreId — valeurs: 1..73 ou 99
+# ex: 41 ou "RefTypeDesordre:41"
 COL_TYPE_DESORDRE_ID = 3
 
-# FR : si false → SIRS recalculera la validation finale
-# EN : if false → final validation performed by SIRS
+# si false → recalcul interne dans SIRS après import
 IS_VALID = false
 
 
-
 #########################################################
-# FALLBACKS OBSERVATIONS / FALLBACKS FOR MISSING COLUMNS
+# VALEURS DE REPLI (fallback)
+# Utilisées si obsN_XXXX manquant
+# ou obsN_phoN_XXXX manquant
 #########################################################
 
-# FR : observateur par défaut — colonne ou UUID statique
-# EN : default observer — column or static UUID
+# observateur par défaut
 OBS_FALLBACK_OBSERVATEUR_ID = "1ec0d5d2de7d9f59346a6305fd000f71"
 
+# nombreDesordres — entier ≥ 0 seulement
 OBS_FALLBACK_NB_DESORDRES = 1
+
+# urgenceId — valeurs: 1,2,3,4,99
+# ou forme "RefUrgence:X"
 OBS_FALLBACK_URGENCE = 99
+
+# suiteApporterId — valeurs: 1..8
+# ou forme "RefSuiteApporter:X"
 OBS_FALLBACK_SUITE = 2
 
-# FR : photographe par défaut — colonne ou UUID statique
-# EN : default photographer — column or static UUID
+
+# photographe par défaut
 PHO_FALLBACK_PHOTOGRAPH_ID = "1ec0d5d2de7d9f59346a6305fd000f71"
 
-# FR : si pas de date photo → réutiliser date observation
-# EN : if missing photo date → reuse observation date
+# si absent → réutiliser la date observation
 PHO_FALLBACK_OBS_DATE = true
 
-# FR : si pas de géométrie photo → coordonnées du désordre
-# EN : if missing photo geometry → reuse damage geometry
+# si absent → réutilisation de la géométrie du désordre
 PHO_FALLBACK_DES_GEOM = true
 
+# orientationPhoto — valeurs: 1..9 ou 99
+# ou "RefOrientationPhoto:X"
 PHO_FALLBACK_ORIENTATION = 99
+
+# coteId (photo) — valeurs: 1..8 ou 99
 PHO_FALLBACK_COTE = 99
-
-
-
-#########################################################
-# VERBOSE
-#########################################################
-
-VERBOSE = true
 
