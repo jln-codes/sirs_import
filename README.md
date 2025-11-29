@@ -57,27 +57,30 @@ pip install -e .
 # Utilisation
 
 ## Mode par défaut
-
+```
 cd path/to/data
 sirs_import
+```
 
 ## Extraction linearId et contactId uniquement
-
+```
 cd chemin/vers/données
 sirs_import --extract
+```
 
 Crée les fichiers <layer_name>_linearId.txt et <layer_name>_contactId.txt
 
 ## Import complet vers CouchDB
-
+```
 cd path/to/data
 sirs_import --upload
+```
 
 ---
 
 # Fichier de configuration
 
-Un fichier config_sirs.toml doit être placé dans le répertoire projet. On peut aussi fournir l'argument --config chemin/vers/config.
+Un fichier config_sirs.toml doit être placé dans le répertoire projet. On peut aussi fournir l'argument --config chemin/vers/config.toml.
 
 Exemple fourni :
 

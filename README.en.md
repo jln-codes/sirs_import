@@ -57,21 +57,24 @@ pip install -e .
 # Usage
 
 ## Default mode
-
+```
 cd path/to/data
 sirs_import
+```
 
 ## Extract-only mode
-
+```
 cd path/to/data
 sirs_import --extract
+```
 
 Creates the files <layer_name>_linearId.txt and <layer_name>_contactId.txt
 
 ## Full import into CouchDB
-
+```
 cd path/to/data
 sirs_import --upload
+```
 
 ---
 
