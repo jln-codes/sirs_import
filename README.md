@@ -1,4 +1,4 @@
-English version: see README.en.md
+English version [here](https://github.com/TechCabbalr/sirs_import/blob/main/README.en.md)
 
 # sirs_import
 
