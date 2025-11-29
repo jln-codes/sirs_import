@@ -219,7 +219,7 @@ def rewrite_gpkg(gdf, gpkg_schema, orig_geom_type, orig_crs):
 # ------------------------------------------------------------
 #  MAIN
 # ------------------------------------------------------------
-def main(argv=None):
+def real_main(argv=None):
 
     # argparse
     parser = argparse.ArgumentParser(add_help=True)
@@ -575,8 +575,7 @@ def main(argv=None):
     )
 
 
-
-if __name__ == "__main__":
+def main(argv=None):
     try:
         main()
     except UserCancelled as e:
@@ -601,6 +600,9 @@ if __name__ == "__main__":
         print()
         sys.exit(1)
 
+
+if __name__ == "__main__":
+    sys.exit(main())
 
 
 
