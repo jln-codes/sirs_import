@@ -20,8 +20,8 @@ dependencies = [
     "tomli; python_version < '3.11'",
 ]
 
-[tool.setuptools]
-packages = ["sirs_import"]
+[tool.setuptools.packages.find]
+where = ["."]
 
 [tool.setuptools.package-data]
 sirs_import = ["config_sirs.example.toml"]
