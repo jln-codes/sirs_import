@@ -35,6 +35,7 @@ COL_COTE_ID                 = CONFIG["COL_COTE_ID"]
 COL_SOURCE_ID               = CONFIG["COL_SOURCE_ID"]
 COL_CATEGORIE_DESORDRE_ID   = CONFIG["COL_CATEGORIE_DESORDRE_ID"]
 COL_TYPE_DESORDRE_ID        = CONFIG["COL_TYPE_DESORDRE_ID"]
+COL_TRONCONS                = CONFIG["COL_TRONCONS"]
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -303,7 +304,7 @@ def print_unused_columns(
     used_obs_pho: Set[str],
     _invalid_obs_pho: Set[str],
 ) -> None:
-    all_cols_list = [c for c in all_cols if c != "geometry"]
+    all_cols_list = [c for c in all_cols if c not in ("geometry", COL_TRONCONS)]
     used = used_des | used_obs_pho
     unused = [c for c in all_cols_list if c not in used]
 
