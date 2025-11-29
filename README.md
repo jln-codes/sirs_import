@@ -12,11 +12,11 @@ Outil Python pour importer des désordres dans SIRS à partir d'un fichier geopa
 * [Installation](#installation)
 * [Utilisation](#utilisation)
 * [Fichier de configuration](#fichier-de-configuration)
-* [Format des données attendues](#données-attendues)
+* [Données attendues](#données-attendues)
 * [Identifiants SIRS normalisés](#identifiants-sirs)
 * [Export JSON](#export-json)
 * [Dépendances](#dépendances)
-* [Avertissements](#avertissements)
+* [⚠️ Avertissements](#avertissements)
 * [Statut du projet](#statut-du-projet)
 * [Licence](#licence)
 * [Support / Contact](#support--contact)
@@ -81,7 +81,7 @@ Un fichier config_sirs.toml doit être placé dans le répertoire projet. On peu
 
 Exemple fourni :
 
-config_sirs.example.toml
+[config_sirs.example.toml](https://github.com/TechCabbalr/sirs_import/blob/main/config_sirs.example.toml)
 
 ---
 
@@ -107,6 +107,12 @@ obs1_nombreDesordres
 obs1_urgenceId
 ```
 
+Ces colonnes peuvent inclure des NULL. 
+
+L'existence de la colonne obligatoire (suffixe date) détermine l'existence de l'élémemt observation.
+
+Les colonnes non obligatoires peuvent éventuellement être prises en charge par les [fallbacks](valeurs-statiques-et-fallbacks). 
+
 ## Photos
 
 Les colonnes d'observations sont détectées automatiquement sur la base du schéma <prefixe1>*<prefixe2>*<suffixe_autorisé>. Si obs1 et pho1 sont les préfixes, on attend :
@@ -120,6 +126,11 @@ obs1_pho1_libelle
 obs1_pho1_orientationPhoto
 obs1_pho1_coteId
 ```
+Ces colonnes peuvent inclure des NULL. 
+
+L'existence de la colonne obligatoire (suffixe chemin) détermine l'existence de l'élémemt photo.
+
+Les colonnes non obligatoires peuvent éventuellement être prises en charge par les [fallbacks](valeurs-statiques-et-fallbacks). 
 
 ## Répertoire des photos
 
@@ -160,7 +171,7 @@ Ces champs sont vérifiés et normalisés automatiquement.
 
 ---
 
-# Principe des valeurs statiques et fallbacks / Static values & fallback logic
+# Valeurs statiques et fallbacks
 
 Certaines variables du fichier de configuration peuvent être définies soit comme noms de colonnes GPKG, soit comme valeurs uniques appliquées automatiquement en l’absence de colonne dans les données (statiques). Les champs d’observations et de photos peuvent également utiliser des valeurs par défaut si leurs champs ne sont pas présents dans le GPKG (fallbacks)
 
@@ -213,6 +224,8 @@ Utilisation strictement NON COMMERCIALE. Voir LICENSE pour les termes complets.
 Ce programme manipule des données sensibles et modifie les fichiers sources. Sauvegarder les données originales.
 
 Ce programme a été développé sur des données au format SIRS v2.52. La compatibilité est avec SIRS v2.53 est probable mais non testée à ce jour. 
+
+categorieDesordreId et typeDesordreId ne sont pas indépendantes. Cette relation n'est pas vérifiée par le package. Vous devez donc vous assurer de ne pas rentrer de combinaison non reconnues par SIRS sous risque de plantage. 
 
 ---
 

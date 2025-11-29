@@ -10,11 +10,11 @@ Python tool for importing geopackage data (GPKG) into SIRS
 * [Installation](#installation)
 * [Usage](#usage)
 * [Configuration file](#configuration-file)
-* [Expected data format](#expected-data-format)
+* [Expected data](#expected-data-format)
 * [SIRS reference identifiers](#sirs-reference-identifiers)
 * [JSON output](#json-output)
 * [Dependencies](#dependencies)
-* [Warnings](#warnings)
+* [⚠️ Warnings](#warnings)
 * [Project status](#project-status)
 * [License](#license)
 * [Support / Contact](#support--contact)
@@ -78,7 +78,7 @@ A config_sirs.toml file must exist in the project directory. The argument --conf
 
 Example provided:
 
-config_sirs.example.toml
+[config_sirs.example.toml](https://github.com/TechCabbalr/sirs_import/blob/main/config_sirs.example.toml)
 
 ---
 
@@ -102,6 +102,11 @@ obs1_suiteApporterId
 obs1_nombreDesordres
 obs1_urgenceId
 ```
+These columns can inclure NULL values.
+
+The presence of the mandatory column (suffix date) automatically implies the existence of the observation.
+
+Fallback values when defined may take over absent columns [fallbacks](#static-values--fallbacks). 
 
 ## Photos
 
@@ -116,6 +121,11 @@ obs1_pho1_libelle
 obs1_pho1_orientationPhoto
 obs1_pho1_coteId
 ```
+These columns can inclure NULL values.
+
+The presence of the mandatory column (suffix chemin) automatically implies the existence of the observation.
+
+Fallback values when defined may take over absent columns [fallbacks](#static-values--fallbacks). 
 
 ## Photo directory
 
@@ -132,13 +142,13 @@ TRONCON_C/
 
 ---
 
-## Identifiants SIRS / SIRS reference identifiers
+## SIRS reference identifiers
 
 Some fields accept integers > 0 with or without prefixes. This applies to values within GPKG columns and static values defined in the configuration file when columns are absent.
 
 Fields accepting such values :
 
-| Name in JSON/SIRS           | Name in sirs_config.toml    | Autorized integers          | Prefixes                                  |
+| Name in JSON/SIRS           | Name in sirs_config.toml    | Authorized integers          | Prefixes                                  |
 | --------------------------- | --------------------------- | --------------------------- | ----------------------------------------- |
 | `positionId`                | `COL_POSITION_ID`           | 3 à 15, ou 99               | `RefPosition:X`                           |
 | `coteId` (disorder)         | `COL_COTE_ID`               | 1 à 8, ou 99                | `RefCote:X`                               |
@@ -157,7 +167,7 @@ These fields are normalized automatically.
 
 ---
 
-# Principe des valeurs statiques et fallbacks / Static values & fallback logic
+# Static values & fallbacks
 
 Some configuration entries may be set either as GPKG column names or as constant values automatically applied when no such column exists (static). Observation and photo fields may also rely on default values when their corresponding data fields are not present (fallbacks).
 
@@ -210,6 +220,8 @@ Strictly NON-COMMERCIAL USE. See LICENSE for full terms.
 This tool processes potentially critical data and may modify source files. Data should be backed up before processing.
 
 It has been developped using data from SIRS v2.52. The compatibility with SIRS 2.53 is likely but has not been tested yet. 
+
+categorieDesordreId et typeDesordreId are not independant but this tool does not encode their relation. You must make sure that the data are correct otherwise SIRS may crash.
 
 ---
 
