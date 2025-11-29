@@ -6,18 +6,21 @@ Python tool for importing geopackage data (GPKG) into SIRS
 
 # Table of contents
 
+# Table of contents
+
 * [Description](#description)
 * [Installation](#installation)
 * [Usage](#usage)
 * [Configuration file](#configuration-file)
-* [Expected data](#expected-data-format)
-* [SIRS reference identifiers](#sirs-reference-identifiers)
+* [Expected data format](#expected-data-format)
+* [Static values & fallbacks](#static-values--fallbacks)
 * [JSON output](#json-output)
 * [Dependencies](#dependencies)
 * [⚠️ Warnings](#warnings)
 * [Project status](#project-status)
 * [License](#license)
 * [Support / Contact](#support--contact)
+
 
 ---
 
@@ -199,7 +202,7 @@ The validation process ensures that the import is valid from CouchDB and SIRS po
 
 # License
 
-Strictly NON-COMMERCIAL USE. See LICENSE for full terms.
+Strictly NON-COMMERCIAL USE. See [LICENSE](https://github.com/TechCabbalr/sirs_import/blob/4665596ff29e4f1437181034d16e0fa0a1a7dd72/LICENSE) for full terms.
 
 ---
 

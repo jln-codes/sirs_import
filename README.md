@@ -13,7 +13,7 @@ Outil Python pour importer des désordres dans SIRS à partir d'un fichier geopa
 * [Utilisation](#utilisation)
 * [Fichier de configuration](#fichier-de-configuration)
 * [Données attendues](#données-attendues)
-* [Identifiants SIRS normalisés](#identifiants-sirs)
+* [Valeurs statiques et fallbacks](#valeurs-statiques-et-fallbacks)
 * [Export JSON](#export-json)
 * [Dépendances](#dépendances)
 * [⚠️ Avertissements](#avertissements)
@@ -203,7 +203,7 @@ Le processus de validation garanti que les données seront valide du point de vu
 
 # Licence
 
-Utilisation strictement NON COMMERCIALE. Voir LICENSE pour les termes complets.
+Utilisation strictement NON COMMERCIALE. Voir [LICENSE](https://github.com/TechCabbalr/sirs_import/blob/4665596ff29e4f1437181034d16e0fa0a1a7dd72/LICENSE) pour les termes complets.
 
 ---
 
