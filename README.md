@@ -25,7 +25,7 @@ Outil Python pour importer des désordres dans SIRS à partir d'un fichier geopa
 
 # Description
 
-`sirs_import` permet de valider, transformer et importer des données de désordres, observations et photographies dans SIRS, à partir de fichiers GeoPackage (GPKG) et d’arbres de photos.
+`sirs_import` permet de valider, transformer et importer des données de désordres, observations et photographies dans SIRS, à partir de fichiers GeoPackage (GPKG) et d'un dossier photos.
 Le système effectue :
 
 * détection automatique des colonnes
@@ -91,6 +91,7 @@ config_sirs.example.toml
 
 Les colonnes liées aux désordres peuvent avoir n'importe quel nom et seront spécifiées dans le fichier de configuration (.toml).
 
+
 ## Observations
 
 Les colonnes d'observations sont détectées automatiquement sur la base du schéma <prefixe1>_<suffixe_autorisé>. Si obs1 est le préfixe, on attend :
@@ -126,26 +127,66 @@ Le fichier peut restructurer le dossier photo pour coller à l'architecture typi
 
 Arborescence finale :
 
+```
 ./folder_name/
 TRONCON_A/
 TRONCON_B/
 TRONCON_C/
+```
 
 ---
 
-# Identifiants SIRS
+## Nomenclature SIRS
 
 Un certain nombre de champs acceptent des entiers > 0 avec ou sans préfixes. Cela vaut pour les colonnes GPKG et pour les statiques qui seraient définis dans le fichier de configuration.
+
+Champs concernés :
+
+| Nom fonctionnel (JSON SIRS) | Variable de config (TOML)   | Valeurs entières autorisées | Forme préfixée autorisée (chaîne)         |
+| --------------------------- | --------------------------- | --------------------------- | ----------------------------------------- |
+| `positionId`                | `COL_POSITION_ID`           | 3 à 15, ou 99               | `RefPosition:X`                           |
+| `coteId` (désordre)         | `COL_COTE_ID`               | 1 à 8, ou 99                | `RefCote:X`                               |
+| `sourceId`                  | `COL_SOURCE_ID`             | 0 à 4, ou 99                | `RefSource:X`                             |
+| `categorieDesordreId`       | `COL_CATEGORIE_DESORDRE_ID` | 1 à 7                       | `RefCategorieDesordre:X`                  |
+| `typeDesordreId`            | `COL_TYPE_DESORDRE_ID`      | 1 à 73, ou 99               | `RefTypeDesordre:X`                       |
+| `urgenceId`                 | `OBS_FALLBACK_URGENCE`      | 1, 2, 3, 4, 99              | `RefUrgence:X`                            |
+| `suiteApporterId`           | `OBS_FALLBACK_SUITE`        | 1 à 8                       | `RefSuiteApporter:X`                      |
+| `orientationPhoto`          | `PHO_FALLBACK_ORIENTATION`  | 1 à 9, ou 99                | `RefOrientationPhoto:X`                   |
+| `coteId` (photo)            | `PHO_FALLBACK_COTE`         | 1 à 8, ou 99                | `RefCote:X`                               |
+| `nombreDesordres`           | `OBS_FALLBACK_NB_DESORDRES` | entier natif ≥ 0 (0,1,2,…)  | pas de forme préfixée (entier uniquement) |
+
 
 Ces champs sont vérifiés et normalisés automatiquement.
 
 ---
 
+# Principe des valeurs statiques et fallbacks / Static values & fallback logic
+
+Certaines variables du fichier de configuration peuvent être définies soit comme noms de colonnes GPKG, soit comme valeurs uniques appliquées automatiquement en l’absence de colonne dans les données (statiques). Les champs d’observations et de photos peuvent également utiliser des valeurs par défaut si leurs champs ne sont pas présents dans le GPKG (fallbacks)
+
+Priorité interne de lecture
+1. valeur présente dans le GPKG
+2. valeur issue du fichier de configuration (si définie)
+
+COL_POSITION_ID = "pos"
+→ lecture depuis colonne `pos`
+
+COL_POSITION_ID = 7
+→ positionId = 7 pour toutes les lignes
+
+obs2_observateurId absent
+→ observateur par défaut utilisé
+
+obs3_pho1_orientationId manquant
+→ orientation par défaut appliquée (ex: 99)
+
+---
+
 # Export JSON
 
-nom_GPKG.json
+Ce fichier (nom_couche.json) peut ensuite être importé dans SIRS (sisr_import --upload).
 
-Ce fichier peut ensuite être importé dans SIRS (sisr_import --upload).
+Le processus de validation garanti que les données seront valide du point de vue de CouchDB et de SIRS. A vous cependant de vous assurer qu'elles contiennent assez d'information pour être pertinente du point de vue du gestionnaire de digues. 
 
 ---
 
@@ -167,9 +208,11 @@ Utilisation strictement NON COMMERCIALE. Voir LICENSE pour les termes complets.
 
 ---
 
-# Avertissements
+# ⚠️ Avertissements
 
 Ce programme manipule des données sensibles et modifie les fichiers sources. Sauvegarder les données originales.
+
+Ce programme a été développé sur des données au format SIRS v2.52. La compatibilité est avec SIRS v2.53 est probable mais non testée à ce jour. 
 
 ---
 

@@ -123,26 +123,67 @@ The script can automatically reorganize the photo directory to match the standar
 
 Final directory structure:
 
+```
 ./folder_name/
 TRONCON_A/
 TRONCON_B/
 TRONCON_C/
+```
 
 ---
 
-# SIRS reference identifiers
+## Identifiants SIRS / SIRS reference identifiers
 
-Several fields accept integers > 0 with or without prefixes. This applies both to GPKG columns and to static values defined in the configuration file.
+Some fields accept integers > 0 with or without prefixes. This applies to values within GPKG columns and static values defined in the configuration file when columns are absent.
 
-These fields are automatically verified and normalized.
+Fields accepting such values :
+
+| Name in JSON/SIRS           | Name in sirs_config.toml    | Autorized integers          | Prefixes                                  |
+| --------------------------- | --------------------------- | --------------------------- | ----------------------------------------- |
+| `positionId`                | `COL_POSITION_ID`           | 3 à 15, ou 99               | `RefPosition:X`                           |
+| `coteId` (disorder)         | `COL_COTE_ID`               | 1 à 8, ou 99                | `RefCote:X`                               |
+| `sourceId`                  | `COL_SOURCE_ID`             | 0 à 4, ou 99                | `RefSource:X`                             |
+| `categorieDesordreId`       | `COL_CATEGORIE_DESORDRE_ID` | 1 à 7                       | `RefCategorieDesordre:X`                  |
+| `typeDesordreId`            | `COL_TYPE_DESORDRE_ID`      | 1 à 73, ou 99               | `RefTypeDesordre:X`                       |
+| `urgenceId`                 | `OBS_FALLBACK_URGENCE`      | 1, 2, 3, 4, 99              | `RefUrgence:X`                            |
+| `suiteApporterId`           | `OBS_FALLBACK_SUITE`        | 1 à 8                       | `RefSuiteApporter:X`                      |
+| `orientationPhoto`          | `PHO_FALLBACK_ORIENTATION`  | 1 à 9, ou 99                | `RefOrientationPhoto:X`                   |
+| `coteId` (photo)            | `PHO_FALLBACK_COTE`         | 1 à 8, ou 99                | `RefCote:X`                               |
+| `nombreDesordres`           | `OBS_FALLBACK_NB_DESORDRES` | integer ≥ 0 (0,1,2,…)       | not applicable                            |
+
+
+
+These fields are normalized automatically.
+
+---
+
+# Principe des valeurs statiques et fallbacks / Static values & fallback logic
+
+Some configuration entries may be set either as GPKG column names or as constant values automatically applied when no such column exists (static). Observation and photo fields may also rely on default values when their corresponding data fields are not present (fallbacks).
+
+Internal resolution order:
+1. value present in the GPKG
+2. value from configuration (if defined)
+
+COL_POSITION_ID = "pos"
+→ read from GPKG column `pos`
+
+COL_POSITION_ID = 7
+→ positionId = 7 for all rows
+
+obs2_observateurId absent
+→ default observer assigned
+
+obs3_pho1_orientationId manquant
+→ default orientation applied (e.g., 99)
 
 ---
 
 # JSON output
 
-nom_GPKG.json
+This output (layer_name.json) can then be parsed and uploaded into SIRS (sisr_import --upload).
 
-This output can then be ingested into SIRS (sisr_import --upload).
+The validation process ensures that the import is valid from CouchDB and SIRS points of view. However you should still make sure they include enough data to be meaningful.
 
 ---
 
@@ -164,9 +205,11 @@ Strictly NON-COMMERCIAL USE. See LICENSE for full terms.
 
 ---
 
-# Warnings
+# ⚠️ Warnings
 
 This tool processes potentially critical data and may modify source files. Data should be backed up before processing.
+
+It has been developped using data from SIRS v2.52. The compatibility with SIRS 2.53 is likely but has not been tested yet. 
 
 ---
 
