@@ -1,17 +1,15 @@
 [build-system]
-requires = ["setuptools>=61", "wheel"]
+requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "sirs_import"
-version = "0.1.0"
+version = "0.1.1"
 description = "Importation GPKG → SIRS (désordres, observations, photos)"
-authors = [
-    {name = "TechCabbalr"}
-]
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "CC-BY-NC-ND-4.0" }
+authors = [{name = "TechCabbalr"}]
 
 dependencies = [
     "pandas",
@@ -23,19 +21,10 @@ dependencies = [
 ]
 
 [tool.setuptools]
-py-modules = [
-    "json_builder",
-    "diag_pho",
-    "helpers",
-    "config_loader",
-    "relocate",
-    "diag_obs",
-    "exceptions",
-    "check_dates",
-    "config_defaults",
-    "couchdb",
-    "diag_des",
-]
+packages = ["sirs_import"]
+
+[tool.setuptools.package-data]
+sirs_import = ["config_sirs.example.toml"]
 
 [project.scripts]
 sirs_import = "sirs_import.__main__:main"
