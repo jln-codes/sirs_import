@@ -48,7 +48,7 @@ pip install sirs_import
 ## Local developpement
 
 ```
-git clone [https://github.com/TechCabbalr/sirs_import.git](https://github.com/TechCabbalr/sirs_import.git)
+git clone [https://github.com/TechCabbalr/sirs_import.git](https://github.com/jlncodes/sirs_import.git)
 cd sirs_import
 pip install -e .
 ```

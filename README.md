@@ -48,7 +48,7 @@ pip install sirs_import
 ## Développement local
 
 ```
-git clone [https://github.com/TechCabbalr/sirs_import.git](https://github.com/TechCabbalr/sirs_import.git)
+git clone [https://github.com/TechCabbalr/sirs_import.git](https://github.com/jln-codes/sirs_import.git)
 cd sirs_import
 pip install -e .
 ```
@@ -112,7 +112,7 @@ Ces colonnes peuvent inclure des NULL.
 
 L'existence de la colonne obligatoire (suffixe date) détermine l'existence de l'élémemt observation.
 
-Les colonnes non obligatoires peuvent éventuellement être prises en charge par les [fallbacks](valeurs-statiques-et-fallbacks). 
+Les colonnes non obligatoires peuvent éventuellement être prises en charge par les [fallbacks](#valeurs-statiques-et-fallbacks). 
 
 ## Photos
 
@@ -131,7 +131,7 @@ Ces colonnes peuvent inclure des NULL.
 
 L'existence de la colonne obligatoire (suffixe chemin) détermine l'existence de l'élémemt photo.
 
-Les colonnes non obligatoires peuvent éventuellement être prises en charge par les [fallbacks](valeurs-statiques-et-fallbacks). 
+Les colonnes non obligatoires peuvent éventuellement être prises en charge par les [fallbacks](#valeurs-statiques-et-fallbacks). 
 
 ## Répertoire des photos
 
