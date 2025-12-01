@@ -312,7 +312,7 @@ def print_unused_columns(
         print(bold(yellow("⚠️  Colonnes non utilisées :")))
         print(yellow("   " + ", ".join(unused)))
     else:
-        print(green("✅ Toutes les colonnes présentes ont été utilisées."))
+        print("✅ Toutes les colonnes présentes ont été utilisées.")
 
 
 def print_mapping_verbose(rows, errors, warnings):
