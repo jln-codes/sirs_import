@@ -13,6 +13,7 @@ dist/
 venv/
 env/
 .venv/
+sirs_env/
 
 ########################################
 # Fichiers locaux non versionnés
