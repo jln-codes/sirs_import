@@ -210,7 +210,7 @@ Utilisation strictement NON COMMERCIALE. Voir [LICENSE](https://github.com/TechC
 
 # Dépendances
 
-* Python ≥ 3.10
+* Python 3.10  ou 3.11 **uniquement**
 * pandas
 * geopandas
 * fiona

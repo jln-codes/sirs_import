@@ -209,7 +209,7 @@ Strictly NON-COMMERCIAL USE. See [LICENSE](https://github.com/TechCabbalr/sirs_i
 
 # Dependencies
 
-* Python ≥ 3.10
+* Python 3.10 or 3.11 **only**
 * pandas
 * geopandas
 * fiona
