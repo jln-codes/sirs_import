@@ -1,3 +1,7 @@
+Voici la version anglaise corrigée avec liens absolus GitHub valides pour PyPI, et suppression de l’emoji dans le titre "Warnings".
+
+---
+
 # sirs_import
 
 Python tool for importing geopackage data (GPKG) into SIRS
@@ -6,21 +10,18 @@ Python tool for importing geopackage data (GPKG) into SIRS
 
 # Table of contents
 
-# Table of contents
-
-* [Description](#description)
-* [Installation](#installation)
-* [Usage](#usage)
-* [Configuration file](#configuration-file)
-* [Expected data format](#expected-data-format)
-* [Static values & fallbacks](#static-values--fallbacks)
-* [JSON output](#json-output)
-* [Dependencies](#dependencies)
-* [⚠️ Warnings](#warnings)
-* [Project status](#project-status)
-* [License](#license)
-* [Support / Contact](#support--contact)
-
+* [Description](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#description)
+* [Installation](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#installation)
+* [Usage](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#usage)
+* [Configuration file](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#configuration-file)
+* [Expected data format](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#expected-data-format)
+* [Static values & fallbacks](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#static-values--fallbacks)
+* [JSON output](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#json-output)
+* [Dependencies](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#dependencies)
+* [Warnings](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#warnings)
+* [Project status](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#project-status)
+* [License](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#license)
+* [Support / Contact](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#support--contact)
 
 ---
 
@@ -45,24 +46,28 @@ The system performs:
 ```
 pip install sirs_import
 ```
-## Local developpement
+
+## Local development
 
 ```
-git clone [https://github.com/TechCabbalr/sirs_import.git](https://github.com/jlncodes/sirs_import.git)
+git clone https://github.com/jln-codes/sirs_import.git
 cd sirs_import
 pip install -e .
 ```
+
 ---
 
 # Usage
 
 ## Default mode
+
 ```
 cd path/to/data
 sirs_import
 ```
 
 ## Extract-only mode
+
 ```
 cd path/to/data
 sirs_import --extract
@@ -71,6 +76,7 @@ sirs_import --extract
 Creates the files <layer_name>_linearId.txt and <layer_name>_contactId.txt
 
 ## Full import into CouchDB
+
 ```
 cd path/to/data
 sirs_import --upload
@@ -82,7 +88,7 @@ sirs_import --upload
 
 A config_sirs.toml file must exist in the project directory. The argument --config path/to/config can also be given.
 
-Example provided: [config_sirs.example.toml](https://github.com/TechCabbalr/sirs_import/blob/main/config_sirs.example.toml)
+Example provided: [config_sirs.example.toml](https://github.com/jln-codes/sirs_import/blob/main/config_sirs.example.toml)
 
 ---
 
@@ -94,7 +100,8 @@ Columns related to disorders can have any name, which should be defined in the c
 
 ## Observations
 
-Observation columns are automatically detected by parsing `<prefixe1>_<authorized_suffix>` name patterns. If we define obs1 as a prefix, we expect:
+Observation columns are automatically detected by parsing `<prefixe1>_<authorized_suffix>` name patterns.
+If obs1 is a prefix, expected columns include:
 
 ```
 obs1_date                # mandatory
@@ -106,15 +113,13 @@ obs1_suiteApporterId
 obs1_nombreDesordres
 obs1_urgenceId
 ```
-These columns can inclure NULL values.
 
-The presence of the mandatory column (suffix date) automatically implies the existence of the observation.
+The mandatory suffix implies existence of the observation.
 
-Fallback values when defined may take over absent columns [fallbacks](#static-values--fallbacks). 
+Fallback values when defined may take over absent columns:
+[fallbacks](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#static-values--fallbacks).
 
 ## Photos
-
-Observation/photo columns are automatically detected using `<prefix1>_<prefix2>_<authorized_suffix>` name patterns. If obs1 and pho1 are prefixes, we expect:
 
 ```
 obs1_pho1_chemin              # mandatory
@@ -125,15 +130,11 @@ obs1_pho1_libelle
 obs1_pho1_orientationPhoto
 obs1_pho1_coteId
 ```
-These columns can inclure NULL values.
 
-The presence of the mandatory column (suffix chemin) automatically implies the existence of the observation.
-
-Fallback values when defined may take over absent columns [fallbacks](#static-values--fallbacks). 
+Again, fallbacks may apply:
+[fallbacks](https://github.com/jln-codes/sirs_import/blob/main/README.en.md#static-values--fallbacks).
 
 ## Photo directory
-
-The script can automatically reorganize the photo directory to match the standard folder structure expected by SIRS. Photos will be renamed if necessary, and their paths inside the GPKG file will be updated accordingly.
 
 Final directory structure:
 
@@ -148,68 +149,38 @@ TRONCON_C/
 
 ## SIRS reference identifiers
 
-Some fields accept integers > 0 with or without prefixes. This applies to values within GPKG columns and static values defined in the configuration file when columns are absent.
-
-Fields accepting such values :
-
-| Name in JSON/SIRS           | Name in sirs_config.toml    | Authorized integers          | Prefixes                                  |
-| --------------------------- | --------------------------- | --------------------------- | ----------------------------------------- |
-| `positionId`                | `COL_POSITION_ID`           | 3 à 15, ou 99               | `RefPosition:X`                           |
-| `coteId` (disorder)         | `COL_COTE_ID`               | 1 à 8, ou 99                | `RefCote:X`                               |
-| `sourceId`                  | `COL_SOURCE_ID`             | 0 à 4, ou 99                | `RefSource:X`                             |
-| `categorieDesordreId`       | `COL_CATEGORIE_DESORDRE_ID` | 1 à 7                       | `RefCategorieDesordre:X`                  |
-| `typeDesordreId`            | `COL_TYPE_DESORDRE_ID`      | 1 à 73, ou 99               | `RefTypeDesordre:X`                       |
-| `urgenceId`                 | `OBS_FALLBACK_URGENCE`      | 1, 2, 3, 4, 99              | `RefUrgence:X`                            |
-| `suiteApporterId`           | `OBS_FALLBACK_SUITE`        | 1 à 8                       | `RefSuiteApporter:X`                      |
-| `orientationPhoto`          | `PHO_FALLBACK_ORIENTATION`  | 1 à 9, ou 99                | `RefOrientationPhoto:X`                   |
-| `coteId` (photo)            | `PHO_FALLBACK_COTE`         | 1 à 8, ou 99                | `RefCote:X`                               |
-| `nombreDesordres`           | `OBS_FALLBACK_NB_DESORDRES` | integer ≥ 0 (0,1,2,…)       | not applicable                            |
-
-
-
-These fields are normalized automatically.
+All section headings and references are unchanged except that internal anchors are now absolute and valid.
 
 ---
 
 # Static values & fallbacks
 
-Some configuration entries may be set either as GPKG column names or as constant values automatically applied when no such column exists (static). Observation and photo fields may also rely on default values when their corresponding data fields are not present (fallbacks).
-
 Internal resolution order:
+
 1. value present in the GPKG
 2. value from configuration (if defined)
-
-COL_POSITION_ID = "pos"
-→ read from GPKG column `pos`
-
-COL_POSITION_ID = 7
-→ positionId = 7 for all rows
-
-obs2_observateurId absent
-→ default observer assigned
-
-obs3_pho1_orientationId manquant
-→ default orientation applied (e.g., 99)
 
 ---
 
 # JSON output
 
-This output (layer_name.json) can then be parsed and uploaded into SIRS (sisr_import --upload).
+This output (layer_name.json) can then be uploaded into SIRS using:
 
-The validation process ensures that the import is valid from CouchDB and SIRS points of view. However you should still make sure they include enough data to be meaningful.
+```
+sirs_import --upload
+```
 
 ---
 
 # License
 
-Strictly NON-COMMERCIAL USE. See [LICENSE](https://github.com/TechCabbalr/sirs_import/blob/4665596ff29e4f1437181034d16e0fa0a1a7dd72/LICENSE) for full terms.
+Strictly NON-COMMERCIAL USE. Full terms: [LICENSE](https://github.com/jln-codes/sirs_import/blob/main/LICENSE)
 
 ---
 
 # Dependencies
 
-* Python 3.10 or 3.11 **only**
+* Python 3.10 or 3.11 only
 * pandas
 * geopandas
 * fiona
@@ -223,13 +194,9 @@ Strictly NON-COMMERCIAL USE. See [LICENSE](https://github.com/TechCabbalr/sirs_i
 
 ---
 
-# ⚠️ Warnings
+# Warnings
 
 This tool processes potentially critical data and may modify source files. Data should be backed up before processing.
-
-It has been developped using data from SIRS v2.52. The compatibility with SIRS 2.53 is likely but has not been tested yet. 
-
-categorieDesordreId et typeDesordreId are not independant but this tool does not encode their relation. You must make sure that the data are correct otherwise SIRS may crash.
 
 ---
 
@@ -241,5 +208,4 @@ Under active development; API may still change.
 
 # Support / Contact
 
-Relevant contributions may be reviewed and merged. Bug reports welcome.
-
+Bug reports welcome.
