@@ -44,6 +44,7 @@ The system performs:
 
 ```
 pip install sirs_import
+
 ```
 ## Local developpement
 
@@ -57,12 +58,14 @@ pip install -e .
 # Usage
 
 ## Default mode
+
 ```
 cd path/to/data
 sirs_import
 ```
 
 ## Extract-only mode
+
 ```
 cd path/to/data
 sirs_import --extract
@@ -71,6 +74,7 @@ sirs_import --extract
 Creates the files <layer_name>_linearId.txt and <layer_name>_contactId.txt
 
 ## Full import into CouchDB
+
 ```
 cd path/to/data
 sirs_import --upload
@@ -106,6 +110,7 @@ obs1_suiteApporterId
 obs1_nombreDesordres
 obs1_urgenceId
 ```
+
 These columns can inclure NULL values.
 
 The presence of the mandatory column (suffix date) automatically implies the existence of the observation.
@@ -125,6 +130,7 @@ obs1_pho1_libelle
 obs1_pho1_orientationPhoto
 obs1_pho1_coteId
 ```
+
 These columns can inclure NULL values.
 
 The presence of the mandatory column (suffix chemin) automatically implies the existence of the observation.
@@ -165,8 +171,6 @@ Fields accepting such values :
 | `coteId` (photo)            | `PHO_FALLBACK_COTE`         | 1 à 8, ou 99                | `RefCote:X`                               |
 | `nombreDesordres`           | `OBS_FALLBACK_NB_DESORDRES` | integer ≥ 0 (0,1,2,…)       | not applicable                            |
 
-
-
 These fields are normalized automatically.
 
 ---
@@ -195,9 +199,13 @@ obs3_pho1_orientationId manquant
 
 # JSON output
 
-This output (layer_name.json) can then be parsed and uploaded into SIRS (sisr_import --upload).
+This output (layer_name.json) can then be parsed and uploaded into SIRS using:
 
-The validation process ensures that the import is valid from CouchDB and SIRS points of view. However you should still make sure they include enough data to be meaningful.
+```
+sisr_import --upload
+```
+
+The process ensures that the import is valid from CouchDB and SIRS points of view. However you should still make sure they include enough data to be meaningful.
 
 ---
 

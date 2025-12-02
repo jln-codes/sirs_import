@@ -53,17 +53,20 @@ git clone https://github.com/jln-codes/sirs_import.git
 cd sirs_import
 pip install -e .
 ```
+
 ---
 
 # Utilisation
 
 ## Mode par défaut
+
 ```
 cd path/to/data
 sirs_import
 ```
 
 ## Extraction linearId et contactId uniquement
+
 ```
 cd chemin/vers/données
 sirs_import --extract
@@ -72,6 +75,7 @@ sirs_import --extract
 Crée les fichiers <layer_name>_linearId.txt et <layer_name>_contactId.txt
 
 ## Import complet vers CouchDB
+
 ```
 cd path/to/data
 sirs_import --upload
@@ -128,6 +132,7 @@ obs1_pho1_libelle
 obs1_pho1_orientationPhoto
 obs1_pho1_coteId
 ```
+
 Ces colonnes peuvent inclure des NULL. 
 
 L'existence de la colonne obligatoire (suffixe chemin) détermine l'existence de l'élémemt photo.
@@ -168,7 +173,6 @@ Champs concernés :
 | `coteId` (photo)            | `PHO_FALLBACK_COTE`         | 1 à 8, ou 99                | `RefCote:X`                               |
 | `nombreDesordres`           | `OBS_FALLBACK_NB_DESORDRES` | entier natif ≥ 0 (0,1,2,…)  | pas de forme préfixée (entier uniquement) |
 
-
 Ces champs sont vérifiés et normalisés automatiquement.
 
 ---
@@ -197,9 +201,14 @@ obs3_pho1_orientationId manquant
 
 # Export JSON
 
-Ce fichier (nom_couche.json) peut ensuite être importé dans SIRS (sisr_import --upload).
+Le fichier `nom_couche.json` généré peut ensuite être importé dans SIRS via :
 
-Le processus de validation garanti que les données seront valide du point de vue de CouchDB et de SIRS. A vous cependant de vous assurer qu'elles contiennent assez d'information pour être pertinente du point de vue du gestionnaire de digues. 
+```
+sirs_import --upload
+```
+
+Le processus de validation garanti que les données seront valide du point de vue de CouchDB et de SIRS. 
+A vous cependant de vous assurer qu'elles contiennent assez d'information pour être pertinente du point de vue du gestionnaire de digues. 
 
 ---
 
