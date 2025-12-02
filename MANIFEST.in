@@ -1,5 +1,5 @@
 # INCLUSION EXPLICITE
-include README.md
+include README_PYPI.md
 include LICENSE
 include sirs_import/config_sirs.example.toml
 
