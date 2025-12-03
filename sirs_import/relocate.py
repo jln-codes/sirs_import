@@ -392,11 +392,12 @@ def process_photo_migration(gdf):
 
     if diag["status"] == "conform":
         print()
-        print("✅ Les chemins photos et l'arboresence sont déjà conformes. Aucune migration nécessaire.")
+        print("✅ Les chemins photos et l'arborescence sont déjà conformes. Aucune migration nécessaire.")
         return gdf
 
     # si on arrive ici :
     # diag["status"] == "needs_migration"
+    print()
     print("⚠️ Souhaitez vous reclasser les photos par tronçon comme le fait SIRS ?")
     print("(1) Oui je souhaite migrer les photos et ajuster les chemins")
     print("(2) Non je garde la structure de mon dossier")
