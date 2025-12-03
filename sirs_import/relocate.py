@@ -405,7 +405,7 @@ def process_photo_migration(gdf):
     resp = input("Votre choix: ").strip().lower()
     print()
     if resp not in ("1","o","oui","y","yes"):
-        print("👍 Aucun changement supplémementaire n'est requis.")
+        print("👍 Aucun changement supplémentaire n'est requis.")
         return gdf
 
     print("⚙️ Migration demandée par l'utilisateur.")
