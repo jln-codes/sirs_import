@@ -411,8 +411,6 @@ def generate_json(gdf, patterns, output=None):
         output = f"{GPKG_LAYER}.json"
 
     output_path = os.path.join(PROJECT_DIR, output)
-    print()         
-    print(f"⚠️ Ajout du préfixe {DIGUE_NAME}/ aux chemins d'accès des photos")
     results = []
     cols = list(gdf.columns)
 
