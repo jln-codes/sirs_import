@@ -435,7 +435,7 @@ def process_photo_migration(gdf):
     mapping, collisions = _simulate_relocation(gdf, filename_strategy="keep")
     if not collisions:
         print()
-        print("📁 Migration possible sans renommage.")
+        print("📁 La migration est possible sans renommage.")
         print("(1) continuer")
         print("(2) annuler")
         try:
