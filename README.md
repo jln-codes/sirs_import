@@ -141,15 +141,22 @@ Les colonnes non obligatoires peuvent éventuellement être prises en charge par
 
 ## Répertoire des photos
 
-Le fichier peut restructurer le dossier photo pour coller à l'architecture typique utilisée par SIRS. Les photos seront renommées si nécessaire et leur chemin dans le fichier GPKG mis à jour.
+Le package peut restructurer le dossier photo pour coller à l'architecture typique utilisée par SIRS. Les photos seront renommées si nécessaire et leur chemin dans le fichier GPKG mis à jour.
 
-Arborescence finale :
+Arborescence proposée:
 
 ```
-./folder_name/
-TRONCON_A/
-TRONCON_B/
-TRONCON_C/
+racine_dossier = digue/
+├─ TRONCON_A/
+│  ├─ photo001.jpg
+│  ├─ photo002.jpg
+│  └─ …
+├─ TRONCON_B/
+│  ├─ photo003.jpg
+│  └─ …
+└─ TRONCON_C/
+   ├─ photo004.jpg
+   └─ …
 ```
 
 ---

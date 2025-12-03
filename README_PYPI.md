@@ -113,15 +113,24 @@ obs1_pho1_orientationPhoto
 obs1_pho1_coteId
 ```
 
-## Répertoire photos
+## Répertoire des photos
 
-Restructuration possible selon SIRS :
+Le package peut restructurer le dossier photo pour coller à l'architecture typique utilisée par SIRS. Les photos seront renommées si nécessaire et leur chemin dans le fichier GPKG mis à jour.
+
+Arborescence proposée:
 
 ```
-./folder_name/
-TRONCON_A/
-TRONCON_B/
-TRONCON_C/
+racine_dossier = digue/
+├─ TRONCON_A/
+│  ├─ photo001.jpg
+│  ├─ photo002.jpg
+│  └─ …
+├─ TRONCON_B/
+│  ├─ photo003.jpg
+│  └─ …
+└─ TRONCON_C/
+   ├─ photo004.jpg
+   └─ …
 ```
 
 ---

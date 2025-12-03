@@ -141,13 +141,20 @@ Fallback values when defined may take over absent columns [fallbacks](#static-va
 
 The script can automatically reorganize the photo directory to match the standard folder structure expected by SIRS. Photos will be renamed if necessary, and their paths inside the GPKG file will be updated accordingly.
 
-Final directory structure:
+Directory including only section names :
 
 ```
-./folder_name/
-TRONCON_A/
-TRONCON_B/
-TRONCON_C/
+project_root = deek/
+├─ SECTION_A/
+│  ├─ photo001.jpg
+│  ├─ photo002.jpg
+│  └─ …
+├─ SECTION_B/
+│  ├─ photo003.jpg
+│  └─ …
+└─ SECTION_C/
+   ├─ photo004.jpg
+   └─ …
 ```
 
 ---
