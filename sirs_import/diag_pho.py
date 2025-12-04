@@ -52,7 +52,7 @@ def detect_photo_patterns(columns):
     return {k: sorted(v) for k, v in photos.items()}
 
 
-def validate_photo_structure(photo_patterns, columns, gdf, observation_dates, gpkg_schema):
+def validate_photo_structure(photo_patterns, columns, gdf, observation_dates, gpkg_schema, contact_ids):
     errors = []
     used_columns = set()
     invalid_photo_columns = []
@@ -193,12 +193,23 @@ def validate_photo_structure(photo_patterns, columns, gdf, observation_dates, gp
 
             elif root == "photographeId":
                 raw_vals = gdf[fullcol].dropna().astype(str)
-                bad = [v for v in raw_vals if not is_valid_uuid(v)]
-                if bad:
-                    sample = ", ".join(bad[:3]) + ("..." if len(bad) > 3 else "")
+
+                # 1. UUID invalides
+                bad_syntax = [v for v in raw_vals if not is_valid_uuid(v)]
+                if bad_syntax:
+                    sample = ", ".join(bad_syntax[:3]) + ("..." if len(bad_syntax) > 3 else "")
                     errors.append(
                         f"[GPKG] {obs_key}/{pho_key}.photographeId — UUID invalides (ex: {sample})"
                     )
+                else:
+                    # 2. UUID valides mais inconnus dans CouchDB/SIRS
+                    bad_missing = [v for v in raw_vals if v not in contact_ids]
+                    if bad_missing:
+                        sample = ", ".join(bad_missing[:3]) + ("..." if len(bad_missing) > 3 else "")
+                        errors.append(
+                            f"[GPKG] {obs_key}/{pho_key}.photographeId — UUID inconnus dans CouchDB/SIRS (ex: {sample})"
+                        )
+
 
     return {
         "errors": errors,

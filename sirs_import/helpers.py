@@ -470,9 +470,8 @@ def is_valid_orientation_photo(value: Any) -> bool:
 #  VALIDATION DES FALLBACKS CONFIG
 # ============================================================
 
-def validate_fallbacks(contacts: Sequence[Dict[str, Any]]) -> None:
+def validate_fallbacks(contact_ids: Set[str], user_ids: Set[str]) -> None:
     errors: List[str] = []
-    contact_ids: Set[str] = {str(c["contactId"]) for c in contacts}
 
     if OBS_FALLBACK_NB_DESORDRES not in (None, ""):
         if not isinstance(OBS_FALLBACK_NB_DESORDRES, int):
@@ -548,12 +547,19 @@ def validate_fallbacks(contacts: Sequence[Dict[str, Any]]) -> None:
 
     if COL_AUTHOR not in (None, ""):
         author_val = str(COL_AUTHOR).strip()
-        if not author_val in contact_ids:
-            if is_valid_uuid(author_val):
-                errors.append(
-                    "[FALLBACK] author — valeur "
-                    f"{COL_AUTHOR!r} : cet auteur n’existe pas dans CouchDB"
-                )
+
+        if not is_valid_uuid(author_val):
+            errors.append(
+                "[FALLBACK] author — valeur "
+                f"{COL_AUTHOR!r} : UUID valide attendu"
+            )
+
+        elif author_val not in user_ids:
+            errors.append(
+                "[FALLBACK] author — valeur "
+                f"{COL_AUTHOR!r} : cet auteur n’existe pas dans CouchDB"
+            )
+
 
     if errors:
         raise DataValidationError(

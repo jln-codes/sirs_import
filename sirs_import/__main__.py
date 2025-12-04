@@ -20,7 +20,7 @@ from .exceptions import (
 from .couchdb import (
     couchdb_database_exists, get_all_troncons, get_all_contacts,
     couchdb_upload_bulk, validate_troncons_key, choose_join_key,
-    resolve_linear_id, TRONCONS_MISSING
+    resolve_linear_id, TRONCONS_MISSING, get_all_users
 )
 
 from .helpers import (
@@ -280,17 +280,26 @@ def real_main(argv=None):
     except DataNotFoundError:
         raise
     try:
-        contacts = get_all_contacts(write_txt=EXTRACT_ONLY)
+        users = get_all_users(write_txt=EXTRACT_ONLY)
     except DataNotFoundError:
         raise
+    try:
+        contacts = get_all_contacts(write_txt=EXTRACT_ONLY)
+    except DataNotFoundError:
+        raise				
     if EXTRACT_ONLY:
         print()
         print(f"✅ Les tronçons et leur linearId sont disponibles dans {COUCH_DB}_linearId.txt")
         print()
+        print(f"✅ Les utilisateurs de la base (auteurs) et leur _id sont disponibles dans {COUCH_DB}_userId.txt")		
+        print()
         print(f"✅ Les contacts (observateurs, photographes) et leur _id sont disponibles dans {COUCH_DB}_contactId.txt")
-
-    # validation fallbacks
-    validate_fallbacks(contacts)
+		
+    contact_ids = {str(c["contactId"]) for c in contacts}
+    user_ids    = {str(u["userId"])   for u in users}
+	
+    # validation fallbacks avec contacts ET utilisateurs
+    validate_fallbacks(contact_ids, user_ids)
 
     # lecture gpkg
     print()
@@ -346,7 +355,7 @@ def real_main(argv=None):
     print([c for c in cols if c != "geometry"])
 
     # diagnostic désordres
-    rows, errors, warnings = diagnose_mapping(cols, gdf, gpkg_schema, contacts)
+    rows, errors, warnings = diagnose_mapping(cols, gdf, gpkg_schema, user_ids)
     used_des_cols = diagnose_mapping.USED_COLUMNS
     print()
     print(bold("🔎 Analyse des champs désordres éditables:"))
@@ -378,7 +387,7 @@ def real_main(argv=None):
 
     # diagnostic observations
     obs_data = validate_observation_structure(
-        cols, gdf, gpkg_schema
+        cols, gdf, gpkg_schema, contact_ids
     )
 
     obs_errors = obs_data["errors"]
@@ -399,7 +408,7 @@ def real_main(argv=None):
     }
 
     photo_data = validate_photo_structure(
-        photo_patterns, cols, gdf, observation_dates, gpkg_schema
+        photo_patterns, cols, gdf, observation_dates, gpkg_schema, contact_ids
     )
 
     used_photo_columns = photo_data["used_columns"]

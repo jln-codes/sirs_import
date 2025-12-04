@@ -50,7 +50,7 @@ def detect_observation_patterns(columns):
     return {k: sorted(v) for k, v in observations.items()}
 
 
-def validate_observation_structure(columns, gdf, gpkg_schema):
+def validate_observation_structure(columns, gdf, gpkg_schema, contact_ids):
     errors = []
     used_columns = set()
     invalid_obs_columns = []
@@ -68,6 +68,9 @@ def validate_observation_structure(columns, gdf, gpkg_schema):
             "used_columns": used_columns,
             "invalid_obs_columns": invalid_obs_columns,
             "fallback_observateur": fallback_observateur,
+            "fallback_urgence": fallback_urgence,
+            "fallback_suite": fallback_suite,
+            "fallback_nb_desordres": fallback_nb_desordres,
         }
 
     for obs_key, suffixes in observations.items():
@@ -105,8 +108,6 @@ def validate_observation_structure(columns, gdf, gpkg_schema):
                 errors.append(f"[GPKG] {date_col} — type {ctype}, attendu 'date'")
 
         # FALLBACKS
-
-        # observateurId
         obs_observ_col = f"{obs_key}_observateurId"
         col_missing = obs_observ_col not in columns
         fallback_observateur[obs_key] = col_missing
@@ -115,7 +116,6 @@ def validate_observation_structure(columns, gdf, gpkg_schema):
             if not is_valid_uuid(str(v)):
                 errors.append(f"[FALLBACK] OBS_FALLBACK_OBSERVATEUR_ID — valeur '{v}' : attendu UUID valide")
 
-        # urgenceId
         obs_urgence_col = f"{obs_key}_urgenceId"
         col_missing = obs_urgence_col not in columns
         fallback_urgence[obs_key] = col_missing
@@ -124,7 +124,6 @@ def validate_observation_structure(columns, gdf, gpkg_schema):
             if not is_valid_urgence(v):
                 errors.append(f"[FALLBACK] OBS_FALLBACK_URGENCE — valeur '{v}' : attendu entier {{1,2,3,4,99}} ou 'RefUrgence:X'")
 
-        # suiteApporterId
         obs_suite_col = f"{obs_key}_suiteApporterId"
         col_missing = obs_suite_col not in columns
         fallback_suite[obs_key] = col_missing
@@ -133,7 +132,6 @@ def validate_observation_structure(columns, gdf, gpkg_schema):
             if not is_valid_suite_apporter(v):
                 errors.append(f"[FALLBACK] OBS_FALLBACK_SUITE — valeur '{v}' : attendu entier {{1..8}} ou 'RefSuiteApporter:X'")
 
-        # nombreDesordres
         obs_nb_col = f"{obs_key}_nombreDesordres"
         col_missing = obs_nb_col not in columns
         fallback_nb_desordres[obs_key] = col_missing
@@ -154,10 +152,19 @@ def validate_observation_structure(columns, gdf, gpkg_schema):
             nonnull = series.dropna()
 
             if root == "observateurId":
-                bad = [v for v in nonnull.astype(str) if not is_valid_uuid(v)]
+                vals = nonnull.astype(str)
+
+                # UUID syntaxe invalide
+                bad = [v for v in vals if not is_valid_uuid(v)]
                 if bad:
                     summary = summarize_bad_values(bad)
                     errors.append(f"[GPKG] {col} — {summary} : attendu UUID valide")
+
+                # UUID syntaxe valide mais inexistant dans CouchDB
+                unknown = [v for v in vals if is_valid_uuid(v) and v not in contact_ids]
+                if unknown:
+                    summary = summarize_bad_values(unknown)
+                    errors.append(f"[GPKG] {col} — {summary} : UUID inconnu dans CouchDB/SIRS")
 
             elif root == "urgenceId":
                 ctype = gpkg_schema.get(col)
@@ -197,4 +204,5 @@ def validate_observation_structure(columns, gdf, gpkg_schema):
         "fallback_suite": fallback_suite,
         "fallback_nb_desordres": fallback_nb_desordres,
     }
+
 

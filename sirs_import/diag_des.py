@@ -165,7 +165,7 @@ def _diag_generic_code(
         rows.append([label, "---", "non défini", msg_fallback_missing, "oui"])
 
 
-def _diag_author(cols, gdf, rows, errors, contact_ids):
+def _diag_author(cols, gdf, rows, errors, user_ids):
     val = COL_AUTHOR
 
     # cas 1 — config vide => autorisé
@@ -195,7 +195,7 @@ def _diag_author(cols, gdf, rows, errors, contact_ids):
         # valeurs existantes mais inconnues dans CouchDB
         invalid_contact = [
             s for s in series.astype(str)
-            if not is_empty(s) and s not in contact_ids
+            if not is_empty(s) and s not in user_ids
         ]
 
         if invalid_contact:
@@ -439,14 +439,13 @@ def _diag_dates(cols, gdf, rows, errors, gpkg_schema):
 # ======================================================================
 #  FONCTION PUBLIQUE
 # ======================================================================
-def diagnose_mapping(available_cols: List[str], gdf, gpkg_schema, contacts) -> Tuple[List[List[str]], List[str], List[str]]:
+def diagnose_mapping(available_cols: List[str], gdf, gpkg_schema, user_ids: Sequence[str]) -> Tuple[List[List[str]], List[str], List[str]]:
     cols = list(available_cols or [])
     rows, errors, warnings = [], [], []
-    contact_ids = {str(c["contactId"]) for c in contacts}
     _diag_base_metadata(rows, errors, warnings)
     _diag_text_columns(cols, gdf, rows, errors)
     _diag_linear_id(cols, gdf, rows, errors)
-    _diag_author(cols, gdf, rows, errors, contact_ids)
+    _diag_author(cols, gdf, rows, errors, user_ids)
     _diag_type_desordre(cols, gdf, rows, errors, warnings)
     _diag_categorie_desordre(cols, gdf, rows, errors, warnings)
     _diag_source(cols, gdf, rows, errors)
