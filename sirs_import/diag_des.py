@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-from typing import List, Tuple
+from typing import List, Tuple, Sequence
 from .helpers import (
     exists, q, is_valid_iso_date, is_valid_cote, is_valid_position,
     is_valid_source, normalize_cote, normalize_position,
