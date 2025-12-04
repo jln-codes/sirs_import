@@ -13,7 +13,7 @@ dist/
 venv/
 env/
 .venv/
-sirs_env/
+linux_env/
 
 ########################################
 # Fichiers locaux non versionnés

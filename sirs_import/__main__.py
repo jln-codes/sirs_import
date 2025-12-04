@@ -577,7 +577,7 @@ def real_main(argv=None):
         raise
 
     if ok:
-        print(bold(f"✅ {len(json_stats['documents'])} documents importés dans couchdb."))
+        print(bold(f"✅ {len(json_stats['documents'])} documents importés dans la base {COUCH_DB}."))
         print()
         return 0
 
