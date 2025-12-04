@@ -186,7 +186,7 @@ def _diag_author(cols, gdf, rows, errors, user_ids):
 
         if invalid_syntax:
             msgsample = ", ".join(invalid_syntax[:3]) + ("..." if len(invalid_syntax) > 3 else "")
-            rows.append(["author", q(val), "colonne GPKG", "UUID invalides détectés", "non"])
+            rows.append(["author", q(val), "colonne GPKG", "UUIDs invalides détectés", "non"])
             errors.append(
                 f"author : colonne '{val}' — UUID au format invalide (ex: {msgsample})"
             )
@@ -200,12 +200,12 @@ def _diag_author(cols, gdf, rows, errors, user_ids):
 
         if invalid_contact:
             msgsample = ", ".join(invalid_contact[:3]) + ("..." if len(invalid_contact) > 3 else "")
-            rows.append(["author", q(val), "colonne GPKG", "UUID inconnus dans SIRS", "non"])
+            rows.append(["author", q(val), "colonne GPKG", "UUIDs inconnus dans SIRS", "non"])
             errors.append(
                 f"author : colonne '{val}' — UUID inconnus dans CouchDB/SIRS (ex: {msgsample})"
             )
         else:
-            rows.append(["author", q(val), "colonne GPKG", "UUID valides et connus dans SIRS", "oui"])
+            rows.append(["author", q(val), "colonne GPKG", "UUIDs valides et connus dans SIRS", "oui"])
 
         return
 

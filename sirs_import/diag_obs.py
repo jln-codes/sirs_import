@@ -163,8 +163,10 @@ def validate_observation_structure(columns, gdf, gpkg_schema, contact_ids):
                 # UUID syntaxe valide mais inexistant dans CouchDB
                 unknown = [v for v in vals if is_valid_uuid(v) and v not in contact_ids]
                 if unknown:
-                    summary = summarize_bad_values(unknown)
-                    errors.append(f"[GPKG] {col} — {summary} : UUID inconnu dans CouchDB/SIRS")
+                    errors.append({
+                        "msg": f"[GPKG] {col} — UUIDs inconnus dans CouchDB/SIRS :", "sub": unknown
+                    })
+
 
             elif root == "urgenceId":
                 ctype = gpkg_schema.get(col)

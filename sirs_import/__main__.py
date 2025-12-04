@@ -335,7 +335,7 @@ def real_main(argv=None):
         return
     
     print()
-    print(f"⚙️ Vérifications préliminaires de {GPKG_PATH} ...")	
+    print(f"⚙️ Vérifications préliminaires de {GPKG_FILE}...")	
 	
     # les colonnes vides ne sont pas autorisées
     try:
@@ -470,15 +470,15 @@ def real_main(argv=None):
         print_error_block(
             "⛔ erreurs au niveau observation → import impossible :",
             obs_errors,
-            red,
+            red
         )
         printed = True
     if photo_errors:
-        print()
+        print()		
         print_error_block(
             "⛔ erreurs au niveau photo → import impossible :",
             photo_errors,
-            red,
+            red
         )
         printed = True
     if printed:

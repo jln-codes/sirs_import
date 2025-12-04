@@ -360,34 +360,89 @@ def print_error_block(
     items: Union[str, Sequence[Any]],
     color_func: Callable[[str], str],
 ) -> None:
+
+    # --- Normalisation ---
     if isinstance(items, str):
         items = [items]
 
-    if not items:
+    # Unique stable
+    seen = set()
+    uniq_items = []
+    for it in items:
+        marker = repr(it)  # unique même pour dict / raw
+        if marker not in seen:
+            seen.add(marker)
+            uniq_items.append(it)
+
+    if not uniq_items:
         print(color_func(title))
         return
 
+    # --- Limite niveau 1 ---
     MAX_ITEMS = 10
-    display_items = items[:MAX_ITEMS]
-    remaining = len(items) - MAX_ITEMS
+    display_items = uniq_items[:MAX_ITEMS]
+    remaining_lvl1 = len(uniq_items) - MAX_ITEMS
 
     lines = [title]
 
+    # --- Construction des lignes ---
     for it in display_items:
+
+        # ------------------------------
+        #   CAS HIÉRARCHIQUE : msg + sub
+        # ------------------------------
+        if isinstance(it, dict) and "msg" in it and "sub" in it:
+
+            # Niveau 1
+            lines.append(f"   - {it['msg']}")
+
+            # Déduplication sous-items
+            sub_seen = set()
+            uniq_sub = []
+            for s in it["sub"]:
+                if s not in sub_seen:
+                    sub_seen.add(s)
+                    uniq_sub.append(s)
+
+            # Limitation
+            MAX_SUB = 10
+            sub_display = uniq_sub[:MAX_SUB]
+            remaining_sub = len(uniq_sub) - MAX_SUB
+
+            # Sous-items
+            for s in sub_display:
+                lines.append(f"        • {s}")
+
+            # Troncature sous-items
+            if remaining_sub > 0:
+                lines.append(f"        … {remaining_sub} autre UUIDs problématiques")
+
+            continue
+
+        # ------------------------------
+        #   CAS EXISTANT : dict "raw"
+        # ------------------------------
         if isinstance(it, dict) and "raw" in it:
             lines.append(it["raw"])
-        else:
-            lines.append(f"   - {it}")
+            continue
 
-    if remaining > 0:
-        lines.append(f"   … {remaining} autres erreurs similaires")
+        # ------------------------------
+        #   CAS EXISTANT : item simple
+        # ------------------------------
+        lines.append(f"   - {it}")
 
+    # Troncature niveau 1
+    if remaining_lvl1 > 0:
+        lines.append(f"   … {remaining_lvl1} autres erreurs similaires")
+
+    # --- Alignement + impression ---
     max_vis = max(visual_len(line) for line in lines)
 
     for line in lines:
         vis = visual_len(line)
         padding = max_vis - vis + 1
         print(color_func(line + " " * padding))
+
 
 
 # ============================================================
@@ -512,7 +567,7 @@ def validate_fallbacks(contact_ids: Set[str], user_ids: Set[str]) -> None:
         elif cid not in contact_ids:
             errors.append(
                 "[FALLBACK] observateurId — valeur "
-                f"{OBS_FALLBACK_OBSERVATEUR_ID!r} : cet observateur n’existe pas dans CouchDB"
+                f"{OBS_FALLBACK_OBSERVATEUR_ID!r} : cet observateur n’existe pas dans SIRS"
             )
 
     if PHO_FALLBACK_ORIENTATION not in (None, ""):
@@ -541,7 +596,7 @@ def validate_fallbacks(contact_ids: Set[str], user_ids: Set[str]) -> None:
         elif pid not in contact_ids:
             errors.append(
                 "[FALLBACK] photographeId — valeur "
-                f"{PHO_FALLBACK_PHOTOGRAPH_ID!r} : ce photographe n’existe pas dans CouchDB"
+                f"{PHO_FALLBACK_PHOTOGRAPH_ID!r} : ce photographe n’existe pas dans SIRS"
             )
 
 
@@ -557,13 +612,13 @@ def validate_fallbacks(contact_ids: Set[str], user_ids: Set[str]) -> None:
         elif author_val not in user_ids:
             errors.append(
                 "[FALLBACK] author — valeur "
-                f"{COL_AUTHOR!r} : cet auteur n’existe pas dans CouchDB"
+                f"{COL_AUTHOR!r} : cet auteur n’existe pas dans SIRS"
             )
 
 
     if errors:
         raise DataValidationError(
-            ["⛔ Certaines valeurs définies comme fallback sont invalides :"] + errors
+            ["⛔ Certaines valeurs de fallback dans le fichier de configuration sont invalides :"] + errors
         )
 
 

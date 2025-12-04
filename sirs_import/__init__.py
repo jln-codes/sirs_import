@@ -1,3 +1,6 @@
-# -*- coding: utf-8 -*-
-__version__ = "1.0.0"
+from importlib.metadata import version, PackageNotFoundError
 
+try:
+    __version__ = version("sirs_import")
+except PackageNotFoundError:
+    __version__ = "0.0.0.dev"

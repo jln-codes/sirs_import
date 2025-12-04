@@ -35,7 +35,7 @@ class PhotoMigrationError(SirsError):
     pass
 
 class GpkgUpdateError(SirsError):
-    """Erreur de miseà jour du GDF interne."""
+    """Erreur de mise à jour du GDF interne."""
     pass
 
 class UserCancelled(SirsError):

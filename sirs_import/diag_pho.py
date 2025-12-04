@@ -199,17 +199,15 @@ def validate_photo_structure(photo_patterns, columns, gdf, observation_dates, gp
                 if bad_syntax:
                     sample = ", ".join(bad_syntax[:3]) + ("..." if len(bad_syntax) > 3 else "")
                     errors.append(
-                        f"[GPKG] {obs_key}/{pho_key}.photographeId — UUID invalides (ex: {sample})"
+                        f"[GPKG] {obs_key}/{pho_key}.photographeId — UUIDs invalides (ex: {sample})"
                     )
                 else:
                     # 2. UUID valides mais inconnus dans CouchDB/SIRS
                     bad_missing = [v for v in raw_vals if v not in contact_ids]
                     if bad_missing:
-                        sample = ", ".join(bad_missing[:3]) + ("..." if len(bad_missing) > 3 else "")
-                        errors.append(
-                            f"[GPKG] {obs_key}/{pho_key}.photographeId — UUID inconnus dans CouchDB/SIRS (ex: {sample})"
-                        )
-
+                        errors.append({
+                            "msg": f"[GPKG] {obs_key}/{pho_key}.photographeId — UUIDs inconnus dans CouchDB/SIRS :", "sub": bad_missing})
+		
 
     return {
         "errors": errors,
