@@ -297,9 +297,6 @@ def real_main(argv=None):
 		
     contact_ids = {str(c["contactId"]) for c in contacts}
     user_ids    = {str(u["userId"])   for u in users}
-	
-    # validation fallbacks avec contacts ET utilisateurs
-    validate_fallbacks(contact_ids, user_ids)
 
     # lecture gpkg
     print()
@@ -343,6 +340,9 @@ def real_main(argv=None):
             raise
         return
 
+    # validation fallbacks avec contacts ET utilisateurs
+    validate_fallbacks(contact_ids, user_ids)
+	
     # démarrage du processus principal
     total_rows = len(gdf)
     total_cols = len(cols)
