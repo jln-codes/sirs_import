@@ -14,7 +14,7 @@ permissions:
 jobs:
 
   build:
-    name: Test package
+    name: Test + Coverage
     runs-on: ubuntu-latest
 
     strategy:
@@ -27,7 +27,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -51,7 +51,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-    - name: Test with pytest and coverage
+    - name: Run tests with coverage
       run: |
         pytest -vv \
           --cov=sirs_import \
@@ -59,15 +59,16 @@ jobs:
           --cov-report=xml \
           --cov-report=html
 
-    - name: Upload HTML coverage report artifact
+    - name: Upload HTML coverage artifact
       uses: actions/upload-artifact@v4
       with:
         name: htmlcov
         path: htmlcov/
-        retention-days: 1
+        retention-days: 5
 
-  publish-coverage:
-    name: Prepare coverage for GitHub Pages
+
+  prepare-pages:
+    name: Prepare Pages Content
     needs: build
     runs-on: ubuntu-latest
 
@@ -76,21 +77,26 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: htmlcov
-        path: coverage/
+        path: public/coverage/
 
-    - name: Prepare Pages folder
+    - name: Create redirect index.html
       run: |
-        mkdir -p public/coverage
-        cp -R coverage/* public/coverage/
+        echo '<!DOCTYPE html><html><head>'                             > public/index.html
+        echo '<meta http-equiv="refresh" content="0; url=coverage/">' >> public/index.html
+        echo '<title>sirs_import Coverage</title>'                    >> public/index.html
+        echo '</head><body>'                                          >> public/index.html
+        echo 'Redirecting to <a href="coverage/">coverage report</a>...' >> public/index.html
+        echo '</body></html>'                                         >> public/index.html
 
     - name: Upload Pages artifact
       uses: actions/upload-pages-artifact@v3
       with:
         path: public
 
+
   deploy:
     name: Deploy GitHub Pages
-    needs: publish-coverage
+    needs: prepare-pages
     runs-on: ubuntu-latest
     environment:
       name: github-pages
