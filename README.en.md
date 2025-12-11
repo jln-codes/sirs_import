@@ -242,8 +242,6 @@ Strictly NON-COMMERCIAL USE. See [LICENSE](https://github.com/jln-codes/sirs_imp
 
 This tool processes potentially critical data and may modify source files. Data should be backed up before processing.
 
-It has been developped using data from SIRS v2.52. The compatibility with SIRS 2.53 is likely but has not been tested yet. 
-
 categorieDesordreId et typeDesordreId are not independant but this tool does not encode their relation. You must make sure that the data are correct otherwise SIRS may crash.
 
 ---

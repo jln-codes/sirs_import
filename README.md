@@ -245,8 +245,6 @@ Utilisation strictement NON COMMERCIALE. Voir [LICENSE](https://github.com/jln-c
 
 Ce programme manipule des données sensibles et modifie les fichiers sources. Sauvegarder les données originales.
 
-Ce programme a été développé sur des données au format SIRS v2.52. La compatibilité est avec SIRS v2.53 est probable mais non testée à ce jour. 
-
 categorieDesordreId et typeDesordreId ne sont pas indépendantes. Cette relation n'est pas vérifiée par le package. Vous devez donc vous assurer de ne pas rentrer de combinaison non reconnues par SIRS sous risque de plantage. 
 
 ---
