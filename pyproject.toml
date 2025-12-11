@@ -4,7 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sirs_import"
+<<<<<<< HEAD
 version = "0.5.0"
+=======
+version = "0.4.9"
+>>>>>>> 55984046886f5fc3d480d56eaa3a2baac3ff1181
 description = "Importation GPKG → SIRS (désordres, observations, photos)"
 readme = "README_PYPI.md"
 requires-python = ">=3.10,<3.12"

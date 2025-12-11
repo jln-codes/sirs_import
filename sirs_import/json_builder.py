@@ -57,6 +57,12 @@ def _safe_str(v):
         return None
     return str(v).strip()
 
+def _extract_author_from_row(row, gdf_columns):
+    if COL_AUTHOR in gdf_columns and not is_empty(row[COL_AUTHOR]):
+        return _safe_str(row[COL_AUTHOR])
+    else:
+        sval = (COL_AUTHOR or "").strip()
+        return sval if is_valid_uuid(sval) else None
 
 def _positions_from_geometry(geom):
     if geom is None or geom.is_empty:
@@ -101,6 +107,12 @@ def _extract_photos_from_row(row, obs_key, photos_patterns, obs_date_value, pos_
             "@class": "fr.sirs.core.model.Photo",
             "valid": IS_VALID,
         }
+
+        # ---- AUTHOR INSERTION ----
+        author_val = _extract_author_from_row(row, row.index)
+        if author_val:
+            photo_data["author"] = author_val
+        # ---------------------------
 
         raw_chemin = None
         raw_photo_date = None
@@ -163,13 +175,13 @@ def _extract_photos_from_row(row, obs_key, photos_patterns, obs_date_value, pos_
         if not is_empty(raw_libelle):
             photo_data["libelle"] = _safe_str(raw_libelle)
 
-        # orientationPhoto (normalisée, gère int / float / "RefOrientationPhoto:X")
+        # orientationPhoto
         if not is_empty(raw_orientation):
             norm_orient = normalize_orientation_photo(raw_orientation)
             if norm_orient:
                 photo_data["orientationPhoto"] = norm_orient
 
-        # coteId (normalisée, gère int / float / "RefCote:X")
+        # coteId
         if not is_empty(raw_cote):
             norm_cote = normalize_cote(raw_cote)
             if norm_cote:
@@ -209,6 +221,12 @@ def _extract_observations_from_row(row, patterns, pos_deb_parent, pos_fin_parent
             "date": normalize_date_strict(date_val),
         }
 
+        # ---- AUTHOR INSERTION ----
+        author_val = _extract_author_from_row(row, row.index)
+        if author_val:
+            obs_data["author"] = author_val
+        # ---------------------------
+
         for s in suffixes:
             if s == "date":
                 continue
@@ -231,7 +249,6 @@ def _extract_observations_from_row(row, patterns, pos_deb_parent, pos_fin_parent
                         continue
                 except Exception:
                     pass
-                # si on arrive ici, on laisse tomber (diag_obs aurait dû bloquer)
                 continue
 
             # urgenceId → RefUrgence:X
@@ -291,6 +308,7 @@ def _extract_observations_from_row(row, patterns, pos_deb_parent, pos_fin_parent
     return observations
 
 
+
 def _build_desordre_from_row(row, gdf_columns, patterns):
 
     designation_val = _safe_str(row[COL_DESIGNATION]) if COL_DESIGNATION in gdf_columns and not is_empty(row[COL_DESIGNATION]) else None
@@ -298,11 +316,7 @@ def _build_desordre_from_row(row, gdf_columns, patterns):
     commentaire_val = _safe_str(row[COL_COMMENTAIRE]) if COL_COMMENTAIRE in gdf_columns and not is_empty(row[COL_COMMENTAIRE]) else None
 
     # author
-    if COL_AUTHOR in gdf_columns and not is_empty(row[COL_AUTHOR]):
-        author_val = _safe_str(row[COL_AUTHOR])
-    else:
-        sval = (COL_AUTHOR or "").strip()
-        author_val = sval if is_valid_uuid(sval) else None
+    author_val = _extract_author_from_row(row, gdf_columns)
 
     # dates
     if COL_DATE_DEBUT in gdf_columns and not is_empty(row[COL_DATE_DEBUT]):

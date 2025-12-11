@@ -7,9 +7,8 @@ from .helpers import (
     normalize_source, is_nonempty_scalar, is_valid_uuid,
     is_valid_type_desordre, is_valid_categorie_desordre,
     normalize_type_desordre, normalize_categorie_desordre,
-    is_empty
+    is_empty, bold
 )
-
 from .config_loader import CONFIG
 COL_AUTHOR             = CONFIG["COL_AUTHOR"]
 COL_COMMENTAIRE        = CONFIG["COL_COMMENTAIRE"]
@@ -26,6 +25,7 @@ COL_POSITION_ID        = CONFIG["COL_POSITION_ID"]
 COL_TYPE_DESORDRE_ID   = CONFIG["COL_TYPE_DESORDRE_ID"]
 COL_CATEGORIE_DESORDRE_ID = CONFIG["COL_CATEGORIE_DESORDRE_ID"]
 
+from .exceptions import UserCancelled
 
 USED_COLUMNS = set()
 
@@ -317,6 +317,17 @@ def _diag_geometry(cols, gdf, rows, errors):
         rows.append(["positionFin", "positionDebut", "inféré du GPKG", "tous les désordres sont des points", "oui"])
 
     elif geom_type == "LineString":
+        print()
+        print("Si le fichier contient des lignes complexes (>2 points), celles-ci seront simplifiées pour SIRS (début/fin)")
+        print("(1) je suis d'accord")
+        print("(2) je préfère redessiner mes lignes dans QGIS")
+        try:
+            resp = input("Votre choix: ").strip().lower()
+        except EOFError:
+            raise UserCancelled(bold("❌ Processus interrompu"))
+        if resp not in ("1","o","oui","y","yes"):
+            raise UserCancelled(bold("❌ Processus interrompu"))
+
         rows.append(["positionDebut", "POINT (x_debut, y_debut)", "inféré du GPKG", "tous les désordres sont des lignes", "oui"])
         rows.append(["positionFin", "POINT (x_fin, y_fin)", "inféré du GPKG", "tous les désordres sont des lignes", "oui"])
 
