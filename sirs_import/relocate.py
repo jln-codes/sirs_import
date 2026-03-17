@@ -4,7 +4,10 @@ import re
 import uuid
 import shutil
 from datetime import datetime
-from .helpers import bold, yellow, is_empty
+from .helpers import (
+    bold, yellow, is_empty,
+    normalize_rel_path, normalize_troncon, to_absolute_project_path
+)
 from .exceptions import UserCancelled, PhotoMigrationError, GpkgUpdateError
 from .config_loader import CONFIG, PROJECT_DIR
 COL_TRONCONS  = CONFIG["COL_TRONCONS"]
@@ -40,11 +43,7 @@ def _split_filename(fname: str):
 
 # résout un chemin relatif en chemin absolu
 def _resolve_absolute_path(raw: str) -> str:
-    raw = str(raw).strip()
-    if os.path.isabs(raw):
-        return os.path.abspath(raw)
-    return os.path.abspath(os.path.join(PROJECT_DIR, raw))
-
+    return to_absolute_project_path(raw, PROJECT_DIR)
 
 # teste l’existence d’un fichier
 def _file_exists(path: str) -> bool:
@@ -93,15 +92,14 @@ def _build_target_filename(base, row, col, strategy, pd):
 
 
 def _iter_photo_entries(gdf):
-    import pandas as pd
     photo_cols = [c for c in gdf.columns if "_pho" in c and c.endswith("_chemin")]
     for idx, row in gdf.iterrows():
-        troncon = str(row.get(COL_TRONCONS, "undefined")).strip()
+        troncon = normalize_troncon(row.get(COL_TRONCONS, "undefined"))
         for col in photo_cols:
             raw = row.get(col)
             if is_empty(raw):
                 continue
-            raw_str = str(raw).strip().replace("\\", "/")
+            raw_str = normalize_rel_path(raw)
             yield idx, row, troncon, col, raw_str
 
 
@@ -319,19 +317,25 @@ def _apply_relocation(mapping):
 
 def _update_gdf(gdf, mapping):
     photo_cols = [c for c in gdf.columns if "_pho" in c and c.endswith("_chemin")]
+
     for idx, row in gdf.iterrows():
-        troncon = str(row.get(COL_TRONCONS, "undefined")).strip()
+        troncon = normalize_troncon(row.get(COL_TRONCONS, "undefined"))
+
         for col in photo_cols:
             raw = row.get(col)
-            if not raw:
+            if is_empty(raw):
                 continue
+
             old_abs = os.path.abspath(_resolve_absolute_path(raw))
             if old_abs not in mapping:
                 continue
+
+            updated = False
+
             for cand in mapping[old_abs]:
                 rel = os.path.relpath(cand, PROJECT_DIR)
+                rel = normalize_rel_path(rel)
 
-                # colonne incompatible (sécurité)
                 if col.endswith("_date"):
                     raise GpkgUpdateError([
                         "❗ ERREUR de conversion dans _update_gdf()",
@@ -350,7 +354,17 @@ def _update_gdf(gdf, mapping):
 
                 if rel.startswith(f"{troncon}/"):
                     gdf.at[idx, col] = rel
+                    updated = True
                     break
+
+            if not updated:
+                raise GpkgUpdateError([
+                    "❗ Impossible de mettre à jour le chemin photo dans le GPKG",
+                    f"Ligne={idx}, colonne={col}",
+                    f"Tronçon attendu={troncon}",
+                    f"Valeur source={raw}",
+                    "Aucune destination compatible n’a été trouvée dans le mapping."
+                ])
 
     return gdf
 
@@ -377,7 +391,7 @@ def _generate_target_mapping(gdf, collisions, strategy_for_collisions, strategy_
         strategy = strategy_for_collisions if in_collision else strategy_other
 
         fname = _build_target_filename(base, row, col, strategy, pd)
-        new_abs = os.path.join(PROJECT_DIR, troncon, fname)
+        new_abs = os.path.normpath(os.path.join(PROJECT_DIR, troncon, fname))
 
         mapping.setdefault(old_abs, []).append(new_abs)
 
@@ -459,10 +473,13 @@ def process_photo_migration(gdf):
             print("✅ Migration photo terminée.")
             print()
             print(f"⚠️ Le préfixe {DIGUE_NAME}/ sera ajouté aux chemins d'accès photo durant la construction du JSON pour matcher votre répertoire racine SIRS")
+        except GpkgUpdateError:
+            raise
         except Exception as e:
             raise PhotoMigrationError(
                 ["⛔ Erreur durant la migration des photos :", str(e)]
             )
+
         return gdf
 
     # 6) Collisions → test prefix_date
@@ -478,6 +495,7 @@ def process_photo_migration(gdf):
             resp = input("Votre choix: ").strip().lower()
         except EOFError:
             raise UserCancelled("❌ Migration annulée")
+
         if resp == "1":
             mapping2 = _generate_target_mapping(gdf, collisions, strategy_for_collisions="prefix_date", strategy_other="keep")
         elif resp == "2":
@@ -496,10 +514,13 @@ def process_photo_migration(gdf):
             print("📁 Migration photo terminée.")
             print()
             print(f"⚠️ Le préfixe {DIGUE_NAME}/ sera ajouté aux chemins d'accès photo durant la construction du JSON pour matcher votre répertoire racine SIRS")
+        except GpkgUpdateError:
+            raise
         except Exception as e:
             raise PhotoMigrationError(
                 ["⛔ Erreur durant la migration des photos :", str(e)]
             )
+
         return gdf
 
     # 7) Prefix date ne suffit pas → UUID
@@ -513,6 +534,7 @@ def process_photo_migration(gdf):
             resp = input("Votre choix: ").strip().lower()
         except EOFError:
             raise UserCancelled("❌ Migration annulée")
+
         if resp == "1":
             mapping2 = _generate_target_mapping(gdf, collisions, strategy_for_collisions="uuid", strategy_other="keep")
         elif resp == "2":
@@ -527,10 +549,13 @@ def process_photo_migration(gdf):
             print("📁 Migration photo terminée.")
             print()
             print(f"⚠️ Le préfixe {DIGUE_NAME}/ sera ajouté aux chemins d'accès photo durant la construction du JSON pour matcher votre répertoire racine SIRS")
+        except GpkgUpdateError:
+            raise
         except Exception as e:
             raise PhotoMigrationError(
                 ["⛔ Erreur durant la migration des photos :", str(e)]
             )
+
         return gdf
 
     # 8) Collisions même avec UUID (théoriquement impossible)

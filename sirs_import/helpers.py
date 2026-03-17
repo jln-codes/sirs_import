@@ -5,6 +5,7 @@ import datetime
 import importlib
 import subprocess
 import unicodedata
+from pathlib import Path, PurePosixPath
 from typing import (
     Any,
     Callable,
@@ -764,4 +765,47 @@ def read_gpkg_columns(
     except Exception as e:
         raise GpkgReadError(f"Impossible de lire {GPKG_FILE} : {e}")
 
+# ============================================================
+#  CHEMINS / PORTABILITÉ WINDOWS-LINUX
+# ============================================================
 
+def normalize_rel_path(value: Any) -> str:
+    """
+    Normalise un chemin métier relatif pour stockage dans le GPKG/JSON.
+    Convention interne : séparateur POSIX '/'.
+    """
+    if value is None:
+        return ""
+
+    s = str(value).strip().replace("\\", "/")
+    s = re.sub(r"/+", "/", s)
+    return s
+
+
+def normalize_troncon(value: Any) -> str:
+    """
+    Normalise un nom de tronçon pour usage dans les chemins métier.
+    """
+    if is_empty(value):
+        return "undefined"
+    return normalize_rel_path(str(value).strip())
+
+
+def to_absolute_project_path(raw: Any, project_dir: str) -> str:
+    """
+    Convertit un chemin métier relatif, ou un chemin absolu déjà fourni,
+    en chemin absolu disque compatible avec l'OS.
+    """
+    if raw is None:
+        return ""
+
+    s = str(raw).strip()
+    if not s:
+        return ""
+
+    p = Path(s)
+    if p.is_absolute():
+        return str(p.resolve())
+
+    rel_parts = PurePosixPath(normalize_rel_path(s)).parts
+    return str((Path(project_dir) / Path(*rel_parts)).resolve())
